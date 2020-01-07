@@ -5,4 +5,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Aspose.Words" Version="20.1.0" />
+  </ItemGroup>
+
 </Project>
