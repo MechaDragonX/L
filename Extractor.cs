@@ -48,6 +48,11 @@ namespace L
             }
             return list;
         }
+        /// <summary>
+        /// Extract all text from a PDF document as a single string
+        /// </summary>
+        /// <param name="path">Path to file</param>
+        /// <returns></returns>
         public static string ExtractFromPDF(string path)
         {
             StringBuilder builder = new StringBuilder();
@@ -61,6 +66,11 @@ namespace L
             stream.Close();
             return builder.ToString();
         }
+        /// <summary>
+        /// Extract all text from a PDF document where each page is an item in a List
+        /// </summary>
+        /// <param name="path">Path to file</param>
+        /// <returns></returns>
         public static List<string> ExtractPagesFromPDF(string path)
         {
             List<string> list = new List<string>();
