@@ -35,6 +35,7 @@ namespace L
                 builder.Append(paragraph.Range.Text);
             }
             application.Quit();
+            doc.Close();
             return builder.ToString();
         }
         /// <summary>
@@ -81,14 +82,15 @@ namespace L
         public static string ExtractFromPDF(string path)
         {
             StringBuilder builder = new StringBuilder();
-            FileStream stream = File.Open(path, FileMode.Open, FileAccess.Read);
-            PdfLoadedDocument pdf = new PdfLoadedDocument(stream);
-            foreach(PdfPageBase page in pdf.Pages)
+            using(FileStream stream = File.Open(path, FileMode.Open, FileAccess.Read))
             {
-                builder.AppendFormat("{0}\n", page.ExtractText());
+                PdfLoadedDocument pdf = new PdfLoadedDocument(stream);
+                foreach (PdfPageBase page in pdf.Pages)
+                {
+                    builder.AppendFormat("{0}\n", page.ExtractText());
+                }
+                pdf.Close(true);
             }
-            pdf.Close(true);
-            stream.Close();
             return builder.ToString();
         }
         /// <summary>
