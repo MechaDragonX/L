@@ -1,4 +1,6 @@
-﻿using DocumentFormat.OpenXml;
+﻿using AODL.Document.Content;
+using AODL.Document.TextDocuments;
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.Office.Interop.Word;
@@ -7,7 +9,9 @@ using Syncfusion.Pdf.Parsing;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace L
 {
@@ -25,8 +29,8 @@ namespace L
             Microsoft.Office.Interop.Word.Document doc = application.Documents.Open(path);
 
             StringBuilder builder = new StringBuilder();    
-            // Because "Document" exists in Interop.Word, OpenXml, and AODL, I have to be explicit
-            foreach (Microsoft.Office.Interop.Word.Paragraph paragraph in doc.Content.Paragraphs)
+            // Because "Paragraph" exists in Interop.Word, OpenXml, and AODL, I have to be explicit
+            foreach(Microsoft.Office.Interop.Word.Paragraph paragraph in doc.Content.Paragraphs)
             {
                 builder.Append(paragraph.Range.Text);
             }
@@ -41,10 +45,10 @@ namespace L
         public static string ExtractFromWordXML(string path)
         {
             StringBuilder builder = new StringBuilder();
-            using (WordprocessingDocument doc = WordprocessingDocument.Open(path, false))
+            using(WordprocessingDocument doc = WordprocessingDocument.Open(path, false))
             {
                 Body body = doc.MainDocumentPart.Document.Body;
-                foreach (OpenXmlElement element in body.ChildElements)
+                foreach(OpenXmlElement element in body.ChildElements)
                 {
                     builder.AppendFormat("{0}\n", element.InnerText);
                 }
@@ -59,7 +63,7 @@ namespace L
         public static string[] ExtractLinesFromWordXML(string path)
         {
             List<string> list = new List<string>();
-            using (WordprocessingDocument doc = WordprocessingDocument.Open(path, false))
+            using(WordprocessingDocument doc = WordprocessingDocument.Open(path, false))
             {
                 Body body = doc.MainDocumentPart.Document.Body;
                 foreach (OpenXmlElement element in body.ChildElements)
@@ -70,7 +74,7 @@ namespace L
             return list.ToArray();
         }
         /// <summary>
-        /// Extract all textin a PDF document
+        /// Extract all text in a PDF document
         /// </summary>
         /// <param name="path">Path to file</param>
         /// <returns>A single string with all text</returns>
@@ -96,6 +100,36 @@ namespace L
         {
             string allText = ExtractFromPDF(path);
             return allText.Split('\n');
+        }
+        /// <summary>
+        /// Extract all text in a OpenDocument text file (*.odt)
+        /// </summary>
+        /// <param name="path">Path to file</param>
+        /// <returns>A single string with all text</returns>
+        public static string ExtractFromODT(string path)
+        {
+            StringBuilder builder = new StringBuilder();
+            using(TextDocument doc = new TextDocument())
+            {
+                doc.Load(path);
+                string mainText = string.Join("\n", doc.Content.Cast<IContent>().Select(x => x.Node.InnerText));
+                builder.Append(mainText);
+            }
+            return builder.ToString();
+        }
+        public static string[] ExtractLinesFromODT(string path)
+        {
+            List<string> list = new List<string>();
+            using(TextDocument doc = new TextDocument())
+            {
+                doc.Load(path);
+                IEnumerable<string> text = doc.Content.Cast<IContent>().Select(x => x.Node.InnerText);
+                foreach(string line in text)
+                {
+                    list.Add(line);
+                }
+            }
+            return list.ToArray();
         }
     }
 }
