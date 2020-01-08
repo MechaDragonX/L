@@ -31,11 +31,11 @@ namespace L
             return builder.ToString();
         }
         /// <summary>
-        /// Extract each line of text in a Microsoft Word document to a List
+        /// Extract each line of text in a Microsoft Word document to a string[]
         /// </summary>
         /// <param name="path">Path to file</param>
         /// <returns></returns>
-        public static List<string> ExtractFromWordAsList(string path)
+        public static string[] ExtractLinesFromWord(string path)
         {
             List<string> list = new List<string>();
             using (WordprocessingDocument doc = WordprocessingDocument.Open(path, false))
@@ -46,7 +46,7 @@ namespace L
                     list.Add(element.InnerText);
                 }
             }
-            return list;
+            return list.ToArray();
         }
         /// <summary>
         /// Extract all text from a PDF document as a single string
@@ -67,11 +67,11 @@ namespace L
             return builder.ToString();
         }
         /// <summary>
-        /// Extract all text from a PDF document where each page is an item in a List
+        /// Extract all text from a PDF document where each page is an item in a string[]
         /// </summary>
         /// <param name="path">Path to file</param>
         /// <returns></returns>
-        public static List<string> ExtractPagesFromPDF(string path)
+        public static string[] ExtractPagesFromPDF(string path)
         {
             List<string> list = new List<string>();
             FileStream stream = File.Open(path, FileMode.Open, FileAccess.Read);
@@ -82,7 +82,17 @@ namespace L
             }
             pdf.Close(true);
             stream.Close();
-            return list;
+            return list.ToArray();
+        }
+        /// <summary>
+        /// Extract each line of text in a PDF document to a string[]
+        /// </summary>
+        /// <param name="path">Path to file</param>
+        /// <returns></returns>
+        public static string[] ExtractLinesFromPDF(string path)
+        {
+            string allText = ExtractFromPDF(path);
+            return allText.Split('\n');
         }
     }
 }
