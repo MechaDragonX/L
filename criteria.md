@@ -1,4 +1,4 @@
-	# Criteria to Search in Resume
+# Criteria to Search in Resume
 
 ## Headings
 - Name
