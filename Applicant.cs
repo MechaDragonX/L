@@ -6,20 +6,20 @@ namespace L
 {
     public class Applicant
     {
-        protected class Experience
+        public class Experience
         {
-            protected string Title { get; set; }
-            protected string Location { get; set; }
-            protected DateTime StartDate { get; set; }
-            protected DateTime EndDate { get; set; }
-            protected string[] Responsibilities { get; set; }
-            protected bool Paid { get; set; }
+            public string Title { get; set; }
+            public string Location { get; set; }
+            public DateTime StartDate { get; set; }
+            public DateTime EndDate { get; set; }
+            public string[] Responsibilities { get; set; }
+            public bool Paid { get; set; }
 
-            protected Experience(string title)
+            public Experience(string title)
             {
                 Title = title;
             }
-            protected Experience(string title, string location) : this(title)
+            public Experience(string title, string location) : this(title)
             {
                 Location = location;
             }
@@ -37,9 +37,9 @@ namespace L
         public string HighSchool { get; set; }
         public string CollegeUG { get; set; }
         public string CollegePG { get; set; }
-        protected Experience[] EducationalXP { get; set; }
-        protected Experience[] WorkXP { get; set; }
-        protected Experience[] VolunteerXP { get; }
+        public Experience[] EducationalXP { get; set; }
+        public Experience[] WorkXP { get; set; }
+        public Experience[] VolunteerXP { get; }
         protected string[] Technical { get; set; }
         protected string[] Unsorted { get; set; }
 
