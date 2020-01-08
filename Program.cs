@@ -17,21 +17,9 @@ namespace L
             string workingDir = Environment.CurrentDirectory;
             string projectDir = Directory.GetParent(workingDir).Parent.Parent.FullName;
 
-            printList(ExtractFromWord(projectDir + "/data/rv.docx"));
+            printList(Extractor.ExtractFromWord(projectDir + "/data/rv.docx"));
         }
-        private static List<string> ExtractFromWord(string path)
-        {
-            List<string> list = new List<string>();
-            using (WordprocessingDocument doc = WordprocessingDocument.Open(path, false))
-            {
-                Body body = doc.MainDocumentPart.Document.Body;
-                foreach(OpenXmlElement element in body.ChildElements)
-                {
-                    list.Add(element.InnerText);
-                }
-            }
-            return list;
-        }
+        
 
         private static void printList<T>(List<T> list)
         {
