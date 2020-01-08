@@ -26,22 +26,22 @@ namespace L
         }
 
         // Contact Info
-        public string GivenName { get; }
-        public string Surname { get; }
-        public string Email { get; }
-        public string PhoneNumber { get; }
-        public string Address { get; }
-        public string Summary { get; }
+        public string GivenName { get; set; }
+        public string Surname { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Address { get; set; }
+        public string Summary { get; set; }
 
         // Experience, Skills, Abilities
-        public string HighSchool { get; }
-        public string CollegeUG { get; }
-        public string CollegePG { get; }
-        protected Experience[] EducationalXP { get; }
-        protected Experience[] WorkXP { get; }
+        public string HighSchool { get; set; }
+        public string CollegeUG { get; set; }
+        public string CollegePG { get; set; }
+        protected Experience[] EducationalXP { get; set; }
+        protected Experience[] WorkXP { get; set; }
         protected Experience[] VolunteerXP { get; }
-        protected string[] Technical { get; }
-        protected string[] Unsorted { get; }
+        protected string[] Technical { get; set; }
+        protected string[] Unsorted { get; set; }
 
         public Applicant(string givenName, string surname, string email, string phoneNumber, string address, string summary)
         {
