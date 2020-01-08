@@ -16,8 +16,6 @@ namespace L
         {
             string workingDir = Environment.CurrentDirectory;
             string projectDir = Directory.GetParent(workingDir).Parent.Parent.FullName;
-
-            printList(Extractor.ExtractFromWord(projectDir + "/data/rv.docx"));
         }
         
 
