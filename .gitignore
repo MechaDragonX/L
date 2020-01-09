@@ -339,5 +339,6 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 
-# Data Files
+# Data and Output Files
 data/
+out/

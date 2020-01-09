@@ -10,7 +10,7 @@ namespace L
         {
             string projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
 
-            Console.WriteLine(Extractor.ExtractAll(Path.Join(projectDir, "data", "rv.docx")));
+            // Console.WriteLine(Extractor.ExtractAll("filename"));
             // printArray(Extractor.ExtractAllLines("filename"));
         }
         private static void printArray<T>(T[] array)

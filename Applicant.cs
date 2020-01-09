@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace L
@@ -39,18 +42,46 @@ namespace L
         public string CollegePG { get; set; }
         public Experience[] EducationalXP { get; set; }
         public Experience[] WorkXP { get; set; }
-        public Experience[] VolunteerXP { get; }
-        protected string[] Technical { get; set; }
-        protected string[] Unsorted { get; set; }
+        public Experience[] VolunteerXP { get; set; }
+        public string[] TechnicalSkills { get; set; }
+        public string[] UnsortedSkills { get; set; }
 
-        public Applicant(string givenName, string surname, string email, string phoneNumber, string address, string summary)
+        public Applicant(string givenName, string surname)
         {
             GivenName = givenName;
             Surname = surname;
+        }
+        public Applicant(string givenName, string surname, string email) : this(givenName, surname)
+        {
             Email = email;
+        }
+        public Applicant(string givenName, string surname, string email, string phoneNumber) : this(givenName, surname, email)
+        {
             PhoneNumber = phoneNumber;
+        }
+        public Applicant(string givenName, string surname, string email, string phoneNumber, string address)
+            : this(givenName, surname, email, phoneNumber)
+        {
             Address = address;
+        }
+        public Applicant(string givenName, string surname, string email, string phoneNumber, string address, string summary)
+            : this(givenName, surname, email, phoneNumber, address)
+        {
             Summary = summary;
+        }
+
+        public void Serialize()
+        {
+            JsonSerializer serializer = new JsonSerializer();
+            serializer.Formatting = Formatting.Indented;
+
+            string projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
+            string name = string.Format("{0}, {1}", Surname, GivenName);
+            using(StreamWriter sWriter = new StreamWriter(Path.Join(projectDir, "out", name + ".json")))
+            using(JsonWriter jWriter = new JsonTextWriter(sWriter))
+            {
+                serializer.Serialize(jWriter, this);
+            }
         }
     }
 }
