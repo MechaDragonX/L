@@ -12,6 +12,8 @@ namespace L
 
             // Console.WriteLine(Extractor.ExtractAll("filename"));
             // printArray(Extractor.ExtractAllLines("filename"));
+            Applicant rags = Applicant.Deserialize(Path.Join(projectDir, "out", "Vivek, Raghav.json"));
+            Console.WriteLine(rags);
         }
         private static void printArray<T>(T[] array)
         {
