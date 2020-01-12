@@ -22,7 +22,7 @@ namespace L
                 PdfLoadedDocument pdf = new PdfLoadedDocument(stream);
                 foreach(PdfPageBase page in pdf.Pages)
                 {
-                    builder.AppendFormat("{0}\n", page.ExtractText());
+                    builder.Append(page.ExtractText());
                 }
                 pdf.Close(true);
             }

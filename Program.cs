@@ -10,10 +10,16 @@ namespace L
 		{
 			string projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
 
-			// Console.WriteLine(Extractor.ExtractAll("filename"));
-			// printArray(Extractor.ExtractAllLines("filename"));
+			// Console.WriteLine(FileParser.ExtractAll("filename"));
+			// printArray(FileParser.ExtractAllLines("filename"));
 
 			// Applicant name = Applicant.Deserialize("filename"));
+
+			TextParser textParser = new TextParser(TextParser.TextType.Lines, FileParser.ExtractAllLines(Path.Join(projectDir, "data", "rv.docx")));
+			string name = textParser.getName();
+			Console.WriteLine(name);
+			string email = textParser.getEmail();
+			Console.WriteLine(email);
 		}
 		private static void printArray<T>(T[] array)
 		{

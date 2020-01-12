@@ -29,7 +29,7 @@ namespace L
             if(!parsers.ContainsKey(Path.GetExtension(path)))
                 throw new FileFormatException();
 
-            var parser = parsers[Path.GetExtension(path)];
+            IFileParser parser = parsers[Path.GetExtension(path)];
             if(parser == null)
                 return File.ReadAllText(path);
             return parser.ExtractAllText(path);
