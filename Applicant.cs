@@ -10,11 +10,17 @@ namespace L
     {
         public class Experience
         {
+            [JsonProperty("Title")]
             public string Title { get; set; }
+            [JsonProperty("Location")]
             public string Location { get; set; }
+            [JsonProperty("Start Date")]
             public DateTime StartDate { get; set; }
+            [JsonProperty("End Date")]
             public DateTime EndDate { get; set; }
+            [JsonProperty("Responsibilities")]
             public string[] Responsibilities { get; set; }
+            [JsonProperty("Paid?")]
             public bool Paid { get; set; }
 
             public Experience() { }
