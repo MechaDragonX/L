@@ -20,6 +20,10 @@ namespace L
 			Console.WriteLine(name);
 			string email = textParser.getEmail();
 			Console.WriteLine(email);
+			string phoneNumber = textParser.getPhoneNumber();
+			Console.WriteLine(phoneNumber);
+			string address = textParser.getAddress();
+			Console.WriteLine(address);
 		}
 		private static void printArray<T>(T[] array)
 		{
