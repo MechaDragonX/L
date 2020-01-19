@@ -15,24 +15,26 @@ namespace L
 
 			// Applicant name = Applicant.Deserialize("filename"));
 
-			TextParser textParser = new TextParser("filename");
-			string name = textParser.getName();
+			TextParser textParser = new TextParser(FileParser.ExtractAllLines("filename"));
+			string name = textParser.GetName();
 			Console.WriteLine(name);
-			string email = textParser.getEmail();
+			string email = textParser.GetEmail();
 			Console.WriteLine(email);
-			string phoneNumber = textParser.getPhoneNumber();
+			string phoneNumber = textParser.GetPhoneNumber();
 			Console.WriteLine(phoneNumber);
-			string address = textParser.getAddress();
+			string address = textParser.GetAddress();
 			Console.WriteLine(address);
+			string summary = textParser.GetSummary();
+			Console.WriteLine(summary);
 		}
-		private static void printArray<T>(T[] array)
+		private static void PrintArray<T>(T[] array)
 		{
 			foreach (T item in array)
 			{
 				Console.WriteLine(item);
 			}
 		}
-		private static void printList<T>(List<T> list)
+		private static void PrintList<T>(List<T> list)
 		{
 			foreach(T item in list)
 			{
