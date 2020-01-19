@@ -17,24 +17,6 @@ namespace L
         };
 
         /// <summary>
-        /// Extract all text from a given file
-        /// </summary>
-        /// <param name="path">Path to file</param>
-        /// <returns>A single string with all text</returns>
-        public static string ExtractAllText(string path)
-        {
-            if(!File.Exists(path))
-                throw new FileNotFoundException();
-
-            if(!parsers.ContainsKey(Path.GetExtension(path)))
-                throw new FileFormatException();
-
-            IFileParser parser = parsers[Path.GetExtension(path)];
-            if(parser == null)
-                return File.ReadAllText(path);
-            return parser.ExtractAllText(path);
-        }
-        /// <summary>
         /// Extract each line from a given file
         /// </summary>
         /// <param name="path">Path to file</param>

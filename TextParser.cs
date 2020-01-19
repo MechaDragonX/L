@@ -8,12 +8,6 @@ namespace L
 {
     public class TextParser
     {
-        public enum TextType
-        {
-            Single,
-            Lines
-        }
-
         private static Regex delimiters = new Regex("[—;:/\\<>~*]+");
         // private static char[] delimiters = new char[] { '—', ';', ':', '/', '\\', '<', '>', '~', '*' };
         private static Regex emailPattern = new Regex(
@@ -23,20 +17,14 @@ namespace L
         private static Regex phonePattern = new Regex("\\(?\\d{3}\\)?-? *\\d{3}-? *-?\\d{4}", RegexOptions.Compiled);
 
         public Applicant applicant { get; }
-        public TextType Type { get; }
         public string Text { get; }
         public string[] Lines { get; }
 
-        private TextParser(TextType type)
+        private TextParser()
         {
-            Type = type;
             applicant = new Applicant();
         }
-        public TextParser(TextType type, string text) : this(type)
-        {
-            Text = text;
-        }
-        public TextParser(TextType type, string[] lines) : this(type)
+        public TextParser(string[] lines) : this()
         {
             Lines = lines;
         }
@@ -48,17 +36,13 @@ namespace L
         public string getName()
         {
             string name;
-            string[] givenAndSurname;
-            if(Type == TextType.Lines)
-            {
-                name = Regex.Replace(Lines[0], @"/\n\r/", "");
-                givenAndSurname = name.Split(' ');
-                applicant.GivenName = givenAndSurname[0];
-                applicant.Surname = givenAndSurname[1];
-                return name;
-            }
+            string[] givenAndSurname = Lines[0].Split(' ');
+            applicant.GivenName = givenAndSurname[0];
+            applicant.Surname = givenAndSurname[1];
 
-            return "";
+            StringBuilder builder = new StringBuilder();
+            builder.AppendFormat("{0}, {1}", applicant.Surname, applicant.GivenName);
+            return builder.ToString();
         }
         /// <summary>
         /// Gets the email of the applicant from the text of their resume and adds it to the applicant object
@@ -68,23 +52,19 @@ namespace L
         {
             string emailLine = "";
             string email;
-            if(Type == TextType.Lines)
+            foreach (string line in Lines)
             {
-                foreach(string line in Lines)
+                if (line.Contains('@'))
                 {
-                    if(line.Contains('@'))
-                    {
-                        emailLine = line;
-                        break;
-                    }
+                    emailLine = line;
+                    break;
                 }
-                if(!emailPattern.IsMatch(emailLine))
-                    return "";
-                email = emailPattern.Match(emailLine).Value;
-                applicant.Email = email;
-                return email;
             }
-            return "";
+            if (!emailPattern.IsMatch(emailLine))
+                return "";
+            email = emailPattern.Match(emailLine).Value;
+            applicant.Email = email;
+            return email;
         }
         /// <summary>
         /// Gets the phone number of the applicant from the text of their resume and adds it to the applicant object
@@ -94,23 +74,19 @@ namespace L
         {
             string numberLine = "";
             string phoneNumber = "";
-            if(Type == TextType.Lines)
+            foreach (string line in Lines)
             {
-                foreach(string line in Lines)
+                if (line.Where(x => char.IsDigit(x)).Count() >= 10)
                 {
-                    if(line.Where(x => char.IsDigit(x)).Count() >= 10)
-                    {
-                        numberLine = line;
-                        break;
-                    }
+                    numberLine = line;
+                    break;
                 }
-                if (!phonePattern.IsMatch(numberLine))
-                    return "";
-                phoneNumber = phonePattern.Match(numberLine).Value;
-                applicant.PhoneNumber = phoneNumber;
-                return phoneNumber;
             }
-            return "";
+            if (!phonePattern.IsMatch(numberLine))
+                return "";
+            phoneNumber = phonePattern.Match(numberLine).Value;
+            applicant.PhoneNumber = phoneNumber;
+            return phoneNumber;
         }
         /// <summary>
         /// Gets the address of the applicant from the text of their resume and adds it to the applicant object
@@ -121,30 +97,26 @@ namespace L
             // string addressLine = "";
             string[] elements = null;
             string address = "";
-            if(Type == TextType.Lines)
+            foreach (string line in Lines)
             {
-                foreach(string line in Lines)
+                // if(Regex.Match(line, @"/[,]+/g").Groups.Count == 2)
+                if (line.Split(',').Length == 3)
                 {
-                    // if(Regex.Match(line, @"/[,]+/g").Groups.Count == 2)
-                    if(line.Split(',').Length == 3)
-                    {
-                        elements = delimiters.Split(line);
-                        break;
-                    }
+                    elements = delimiters.Split(line);
+                    break;
                 }
-                foreach(string element in elements)
-                {
-                    // if(Regex.Match(element, @"/[,]+/g").Groups.Count == 2)
-                    if(element.Split(',').Length == 3)
-                    {
-                        address = element.Trim();
-                        break;
-                    }
-                }
-                applicant.Address = address;
-                return address;
             }
-            return "";
+            foreach (string element in elements)
+            {
+                // if(Regex.Match(element, @"/[,]+/g").Groups.Count == 2)
+                if (element.Split(',').Length == 3)
+                {
+                    address = element.Trim();
+                    break;
+                }
+            }
+            applicant.Address = address;
+            return address;
         }
     }
 }

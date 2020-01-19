@@ -12,21 +12,21 @@ namespace L
         /// </summary>
         /// <param name="path">Path to file</param>
         /// <returns>A single string with all text</returns>
-        public string ExtractAllText(string path)
-        {
-            Application application = new Application();
-            Document doc = application.Documents.Open(path);
+        //public string ExtractAllText(string path)
+        //{
+        //    Application application = new Application();
+        //    Document doc = application.Documents.Open(path);
 
-            StringBuilder builder = new StringBuilder();
-            foreach(Paragraph paragraph in doc.Content.Paragraphs)
-            {
-                builder.Append(paragraph.Range.Text);
-            }
+        //    StringBuilder builder = new StringBuilder();
+        //    foreach(Paragraph paragraph in doc.Content.Paragraphs)
+        //    {
+        //        builder.Append(paragraph.Range.Text);
+        //    }
 
-            application.Quit();
-            doc.Close();
-            return builder.ToString();
-        }
+        //    application.Quit();
+        //    doc.Close();
+        //    return builder.ToString();
+        //}
         public string[] ExtractAllLines(string path)
         {
             throw new NotImplementedException();

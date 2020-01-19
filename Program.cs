@@ -15,7 +15,7 @@ namespace L
 
 			// Applicant name = Applicant.Deserialize("filename"));
 
-			TextParser textParser = new TextParser(TextParser.TextType.Lines, FileParser.ExtractAllLines(Path.Join(projectDir, "data", "rv.docx")));
+			TextParser textParser = new TextParser("filename");
 			string name = textParser.getName();
 			Console.WriteLine(name);
 			string email = textParser.getEmail();
