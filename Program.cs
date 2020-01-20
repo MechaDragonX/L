@@ -27,6 +27,10 @@ namespace L
 			Console.WriteLine(summary);
 			string highSchool = textParser.GetHighSchool();
 			Console.WriteLine(highSchool);
+			string collegeUG = textParser.GetCollegeUG();
+			Console.WriteLine(collegeUG);
+			string collegePG = textParser.GetCollegePG();
+			Console.WriteLine(collegePG);
 		}
 		private static void PrintArray<T>(T[] array)
 		{

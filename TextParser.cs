@@ -118,7 +118,7 @@ namespace L
             return address;
         }
         /// <summary>
-        /// Gets the address of the summary from the text of the applicant's resume and adds it to the applicant object
+        /// Gets the summary from the text of the applicant's resume and adds it to the applicant object
         /// </summary>
         /// <returns>Summary</returns>
         public string GetSummary()
@@ -162,7 +162,7 @@ namespace L
             return summary;
         }
         /// <summary>
-        /// Gets the address of the high school from the text of the applicant's resume and adds it to the applicant object
+        /// Gets the high school from the text of the applicant's resume and adds it to the applicant object
         /// </summary>
         /// <returns>High School</returns>
         public string GetHighSchool()
@@ -178,7 +178,7 @@ namespace L
             return "";
         }
         /// <summary>
-        /// Gets the address of the undergraduate college from the text of the applicant's resume and adds it to the applicant object
+        /// Gets the undergraduate college from the text of the applicant's resume and adds it to the applicant object
         /// </summary>
         /// <returns>Undergraduate College</returns>
         public string GetCollegeUG()
@@ -189,7 +189,7 @@ namespace L
                 currentLineLower = line.ToLower();
                 if(currentLineLower.Contains("bachelor of") ||
                     currentLineLower.Contains("bs") || currentLineLower.Contains("b.s.") ||
-                    currentLineLower.Contains("ba") || currentLineLower.Contains("b.a.") ||
+                    currentLineLower.Contains(" ba") || currentLineLower.Contains("b.a.") || // Space added to make sure it is a separate word
                     currentLineLower.Contains("bfa") || currentLineLower.Contains("b.f.a.") ||
                     currentLineLower.Contains("undergraduate") || currentLineLower.Contains("undergrad") || currentLineLower.Contains("ug")
                     )
@@ -201,7 +201,7 @@ namespace L
             return "";
         }
         /// <summary>
-        /// Gets the address of the postgraduate college from the text of the applicant's resume and adds it to the applicant object
+        /// Gets the postgraduate college from the text of the applicant's resume and adds it to the applicant object
         /// </summary>
         /// <returns>Postgraduate College</returns>
         public string GetCollegePG()
@@ -212,7 +212,7 @@ namespace L
                 currentLineLower = line.ToLower();
                 if (currentLineLower.Contains("master of") ||
                     currentLineLower.Contains("ms") || currentLineLower.Contains("m.s.") ||
-                    currentLineLower.Contains("ma") || currentLineLower.Contains("m.a.") ||
+                    currentLineLower.Contains(" ma") || currentLineLower.Contains("m.a.") || // Space added to make sure it is a separate word
                     currentLineLower.Contains("mfa") || currentLineLower.Contains("m.f.a.") ||
                     currentLineLower.Contains("postgraduate") || currentLineLower.Contains("postgrad") || currentLineLower.Contains("pg")
                     )
