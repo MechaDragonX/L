@@ -10,8 +10,7 @@ namespace L
 		{
 			string projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
 
-			// Console.WriteLine(FileParser.ExtractAll("filename"));
-			// printArray(FileParser.ExtractAllLines("filename"));
+			// PrintArray(FileParser.ExtractAllLines(Path.Join("filename")));
 
 			// Applicant name = Applicant.Deserialize("filename"));
 
@@ -26,6 +25,8 @@ namespace L
 			Console.WriteLine(address);
 			string summary = textParser.GetSummary();
 			Console.WriteLine(summary);
+			string highSchool = textParser.GetHighSchool();
+			Console.WriteLine(highSchool);
 		}
 		private static void PrintArray<T>(T[] array)
 		{
