@@ -190,7 +190,7 @@ namespace L
                 if(currentLineLower.Contains("bachelor of") ||
                     currentLineLower.Contains("bs") || currentLineLower.Contains("b.s.") ||
                     currentLineLower.Contains("ba") || currentLineLower.Contains("b.a.") ||
-                    currentLineLower.Contains("bfa") || currentLineLower.Contains("b.f.a.")
+                    currentLineLower.Contains("bfa") || currentLineLower.Contains("b.f.a.") ||
                     currentLineLower.Contains("undergraduate") || currentLineLower.Contains("undergrad") || currentLineLower.Contains("ug")
                     )
                 {
