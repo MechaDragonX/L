@@ -30,7 +30,7 @@ namespace L
         }
 
         /// <summary>
-        /// Gets the name of the applicant from the text of their resume and adds it to the applicant object
+        /// Gets the name of the applicant from the text of the applicant's resume and adds it to the applicant object
         /// </summary>
         /// <returns>Name in "[Given Name] [Surname]" format</returns>
         public string GetName()
@@ -44,7 +44,7 @@ namespace L
             return builder.ToString();
         }
         /// <summary>
-        /// Gets the email of the applicant from the text of their resume and adds it to the applicant object
+        /// Gets the email of the applicant from the text of the applicant's resume and adds it to the applicant object
         /// </summary>
         /// <returns>email</returns>
         public string GetEmail()
@@ -66,7 +66,7 @@ namespace L
             return email;
         }
         /// <summary>
-        /// Gets the phone number of the applicant from the text of their resume and adds it to the applicant object
+        /// Gets the phone number of the applicant from the text of the applicant's resume and adds it to the applicant object
         /// </summary>
         /// <returns>Phone Number</returns>
         public string GetPhoneNumber()
@@ -88,7 +88,7 @@ namespace L
             return phoneNumber;
         }
         /// <summary>
-        /// Gets the address of the applicant from the text of their resume and adds it to the applicant object
+        /// Gets the address of the applicant from the text of the applicant's resume and adds it to the applicant object
         /// </summary>
         /// <returns>Address</returns>
         public string GetAddress()
@@ -117,6 +117,10 @@ namespace L
             App.Address = address;
             return address;
         }
+        /// <summary>
+        /// Gets the address of the summary from the text of the applicant's resume and adds it to the applicant object
+        /// </summary>
+        /// <returns>Summary</returns>
         public string GetSummary()
         {
             List<string> current;
@@ -157,6 +161,10 @@ namespace L
             App.Summary = summary;
             return summary;
         }
+        /// <summary>
+        /// Gets the address of the high school from the text of the applicant's resume and adds it to the applicant object
+        /// </summary>
+        /// <returns>High School</returns>
         public string GetHighSchool()
         {
             foreach(string line in Lines)
@@ -164,6 +172,52 @@ namespace L
                 if(line.ToLower().Contains("high school") && line.Split(' ').Length <= 8) // length of 8 to allow things like "Bob A. Ferguson High School, Grand Rapids, MI" (This school most likely doesn't exist)
                 {
                     App.HighSchool = line;
+                    return line;
+                }
+            }
+            return "";
+        }
+        /// <summary>
+        /// Gets the address of the undergraduate college from the text of the applicant's resume and adds it to the applicant object
+        /// </summary>
+        /// <returns>Undergraduate College</returns>
+        public string GetCollegeUG()
+        {
+            string currentLineLower;
+            foreach(string line in Lines)
+            {
+                currentLineLower = line.ToLower();
+                if(currentLineLower.Contains("bachelor of") ||
+                    currentLineLower.Contains("bs") || currentLineLower.Contains("b.s.") ||
+                    currentLineLower.Contains("ba") || currentLineLower.Contains("b.a.") ||
+                    currentLineLower.Contains("bfa") || currentLineLower.Contains("b.f.a.")
+                    currentLineLower.Contains("undergraduate") || currentLineLower.Contains("undergrad") || currentLineLower.Contains("ug")
+                    )
+                {
+                    App.CollegeUG = line;
+                    return line;
+                }
+            }
+            return "";
+        }
+        /// <summary>
+        /// Gets the address of the postgraduate college from the text of the applicant's resume and adds it to the applicant object
+        /// </summary>
+        /// <returns>Postgraduate College</returns>
+        public string GetCollegePG()
+        {
+            string currentLineLower;
+            foreach (string line in Lines)
+            {
+                currentLineLower = line.ToLower();
+                if (currentLineLower.Contains("master of") ||
+                    currentLineLower.Contains("ms") || currentLineLower.Contains("m.s.") ||
+                    currentLineLower.Contains("ma") || currentLineLower.Contains("m.a.") ||
+                    currentLineLower.Contains("mfa") || currentLineLower.Contains("m.f.a.") ||
+                    currentLineLower.Contains("postgraduate") || currentLineLower.Contains("postgrad") || currentLineLower.Contains("pg")
+                    )
+                {
+                    App.CollegeUG = line;
                     return line;
                 }
             }
