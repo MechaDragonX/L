@@ -187,11 +187,15 @@ namespace L
             foreach(string line in Lines)
             {
                 currentLineLower = line.ToLower();
-                if(currentLineLower.Contains("bachelor of") ||
-                    currentLineLower.Contains("bs") || currentLineLower.Contains("b.s.") ||
-                    currentLineLower.Contains(" ba") || currentLineLower.Contains("b.a.") || // Space added to make sure it is a separate word
-                    currentLineLower.Contains("bfa") || currentLineLower.Contains("b.f.a.") ||
-                    currentLineLower.Contains("undergraduate") || currentLineLower.Contains("undergrad") || currentLineLower.Contains("ug")
+                if (currentLineLower.Contains("bachelor of") ||
+                    Regex.IsMatch(currentLineLower, @"(?:\b|\W)(bs)(?:\b|\W)", RegexOptions.IgnoreCase) ||
+                    Regex.IsMatch(currentLineLower, @"(?:\b|\W)(b.s.)(?:\b|\W)", RegexOptions.IgnoreCase) ||
+                    Regex.IsMatch(currentLineLower, @"(?:\b|\W)(ba)(?:\b|\W)", RegexOptions.IgnoreCase) ||
+                    Regex.IsMatch(currentLineLower, @"(?:\b|\W)(b.a.)(?:\b|\W)", RegexOptions.IgnoreCase) ||
+                    Regex.IsMatch(currentLineLower, @"(?:\b|\W)(bfa)(?:\b|\W)", RegexOptions.IgnoreCase) ||
+                    Regex.IsMatch(currentLineLower, @"(?:\b|\W)(b.f.a.)(?:\b|\W)", RegexOptions.IgnoreCase) ||
+                    currentLineLower.Contains("undergraduate") || currentLineLower.Contains("undergrad") ||
+                    Regex.IsMatch(currentLineLower, @"(?:\b|\W)(ug)(?:\b|\W)", RegexOptions.IgnoreCase)
                     )
                 {
                     App.CollegeUG = line;
@@ -207,14 +211,18 @@ namespace L
         public string GetCollegePG()
         {
             string currentLineLower;
-            foreach (string line in Lines)
+            foreach(string line in Lines)
             {
                 currentLineLower = line.ToLower();
-                if (currentLineLower.Contains("master of") ||
-                    currentLineLower.Contains("ms") || currentLineLower.Contains("m.s.") ||
-                    currentLineLower.Contains(" ma") || currentLineLower.Contains("m.a.") || // Space added to make sure it is a separate word
-                    currentLineLower.Contains("mfa") || currentLineLower.Contains("m.f.a.") ||
-                    currentLineLower.Contains("postgraduate") || currentLineLower.Contains("postgrad") || currentLineLower.Contains("pg")
+                if(currentLineLower.Contains("master of") ||
+                    Regex.IsMatch(currentLineLower, @"(?:\b|\W)(ms)(?:\b|\W)", RegexOptions.IgnoreCase) ||
+                    Regex.IsMatch(currentLineLower, @"(?:\b|\W)(m.s.)(?:\b|\W)", RegexOptions.IgnoreCase) ||
+                    Regex.IsMatch(currentLineLower, @"(?:\b|\W)(ma)(?:\b|\W)", RegexOptions.IgnoreCase) ||
+                    Regex.IsMatch(currentLineLower, @"(?:\b|\W)(m.a.)(?:\b|\W)", RegexOptions.IgnoreCase) ||
+                    Regex.IsMatch(currentLineLower, @"(?:\b|\W)(mfa)(?:\b|\W)", RegexOptions.IgnoreCase) ||
+                    Regex.IsMatch(currentLineLower, @"(?:\b|\W)(m.f.a.)(?:\b|\W)", RegexOptions.IgnoreCase) ||
+                    currentLineLower.Contains("postgraduate") || currentLineLower.Contains("postgrad") ||
+                    Regex.IsMatch(currentLineLower, @"(?:\b|\W)(pg)(?:\b|\W)", RegexOptions.IgnoreCase)
                     )
                 {
                     App.CollegeUG = line;
@@ -222,6 +230,39 @@ namespace L
                 }
             }
             return "";
+        }
+        /// <summary>
+        /// Gets all unsorted skills from the text of the applicant's resume and adds it to the applicant object
+        /// </summary>
+        /// <returns>string[] where each skill is different element</returns>
+        public string[] GetUnsortedSkills()
+        {
+            string current;
+            int startIndex = -1;
+            List<string> skills = new List<string>();
+            for(int i = 0; i < Lines.Length; i++)
+            {
+                current = delimitersNoSpace.Replace(Lines[i].ToLower().Trim(), "");
+                if(startIndex == -1)
+                {
+                    if(current.Contains("skills") && current.Split(' ')[0] != "technical")
+                    {
+                        startIndex = i;
+                    }
+                }
+                else
+                {
+                    if(current.Contains("skills") || current.Contains("experience"))
+                    {
+                        break;
+                    }
+                    else
+                        skills.Add(Lines[i]);
+                }
+            }
+
+            App.UnsortedSkills = skills.ToArray();
+            return skills.ToArray();
         }
     }
 }
