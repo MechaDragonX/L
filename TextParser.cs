@@ -289,10 +289,13 @@ namespace L
                         skills.Add(Lines[i]);
                 }
             }
-
             App.UnsortedSkills = skills.ToArray();
             return skills.ToArray();
         }
+        /// <summary>
+        /// Gets all Work Experience from the text of the applicant's resume and adds it to the applicant object
+        /// </summary>
+        /// <returns>An array of each experience entry</returns>
         public Applicant.Experience[] GetWorkExperience()
         {
             string current;
@@ -342,6 +345,10 @@ namespace L
             App.WorkXP = experience.ToArray();
             return experience.ToArray();
         }
+        /// <summary>
+        /// Gets all Volunteer Experience from the text of the applicant's resume and adds it to the applicant object
+        /// </summary>
+        /// <returns>An array of each experience entry</returns>
         public Applicant.Experience[] GetVolunteerExperience()
         {
             string current;
@@ -409,7 +416,7 @@ namespace L
                     {
                         started = false;
                         startIndex = -1;
-                        experience.Add(GetExperience(input.ToArray()));
+                        experience.Add(App.GetExperience(input.ToArray()));
                         input.Clear();
                         i--;
                     }
@@ -424,106 +431,6 @@ namespace L
                 started = true;
                 input.Add(Lines[i]);
             }
-        }
-
-        public Applicant.Experience GetExperience(string[] input)
-        {
-            Regex beforeAt = new Regex(@".*(?=(\sat))", RegexOptions.Compiled);
-            Regex afterAt = new Regex(@"(?<=(at\s)).*", RegexOptions.Compiled);
-            Regex beforeDash = new Regex(@".*(?=(\s[-–—]))", RegexOptions.Compiled);
-            Regex afterDash = new Regex(@"(?<=([-–—]\s)).*", RegexOptions.Compiled);
-
-            string title = "";
-            string location = "";
-            DateTime startDate = DateTime.MinValue;
-            DateTime endDate = DateTime.MinValue;
-
-            foreach(string element in input)
-            {
-                if(beforeAt.IsMatch(element) && title == "")
-                    title = GetTitle(element);
-                if(afterAt.IsMatch(element) && location == "")
-                    location = GetLocation(element);
-                if(beforeDash.IsMatch(element))
-                    startDate = GetStartDate(element);
-                if(afterDash.IsMatch(element))
-                    endDate = GetEndDate(element);
-            }
-
-            Applicant.Experience experience = new Applicant.Experience(title, location)
-            {
-                StartDate = startDate,
-                EndDate = endDate,
-                Responsibilities = GetResponsibilites(input),
-                Paid = GetPaid(input)
-            };
-
-            return experience;
-        }
-        private string GetTitle(string input)
-        {
-            if(Regex.IsMatch(input, @".*(?=(\sat))"))
-                return Regex.Match(input, @".*(?=(\sat))").Value;
-            return "";
-        }
-        private string GetLocation(string input)
-        {
-            if(Regex.IsMatch(input, @"(?<=(at\s)).*"))
-                return Regex.Match(input, @"(?<=(at\s)).*").Value;
-            return "";
-        }
-        private DateTime GetStartDate(string input)
-        {
-            if(Regex.IsMatch(input, @".*(?=(\s[-–—]))"))
-            {
-                if((Regex.Match(input, @".*(?=(\s[-–—]))").Value).Split(' ').Length == 1)
-                    return DateTimeParser.Parse(
-                        int.Parse(Regex.Match(input, @"\b(\d\d\d\d)\b").Value),
-                        Regex.Match(input, @".*(?=(\s[-–—]))").Value
-                        );
-                return DateTime.Parse(Regex.Match(input, @".*(?=(\s[-–—]))").Value);
-            }
-            return DateTime.MinValue;
-        }
-        private DateTime GetEndDate(string input)
-        {
-            string match;
-            if(Regex.IsMatch(input, @"(?<=([-–—]\s)).*"))
-            {
-                match = Regex.Match(input, @"(?<=([-–—]\s)).*").Value;
-                if(match.ToLower() == "present" || match.ToLower() == "now")
-                    return DateTime.Today;
-                else
-                    return DateTime.Parse(match);
-            }
-            return DateTime.MinValue;
-        }
-        private string[] GetResponsibilites(string[] input)
-        {
-            List<string> responsibilities = new List<string>();
-            Regex beforeAt = new Regex(@".*(?=(\sat))", RegexOptions.Compiled);
-            Regex afterAt = new Regex(@"(?<=(at\s)).*", RegexOptions.Compiled);
-            Regex beforeDash = new Regex(@".*(?=(\s[-–—]))", RegexOptions.Compiled);
-            Regex afterDash = new Regex(@"(?<=([-–—]\s)).*", RegexOptions.Compiled);
-
-            foreach (string element in input)
-            {
-                if(
-                    !beforeAt.IsMatch(element) && !afterAt.IsMatch(element) &&
-                    !beforeDash.IsMatch(element) && !afterDash.IsMatch(element)
-                    )
-                    responsibilities.Add(element);
-            }
-            return responsibilities.ToArray();
-        }
-        private bool GetPaid(string[] input)
-        {
-            foreach(string element in input)
-            {
-                if(Regex.IsMatch(element, @"\b(pay)\b") && !Regex.IsMatch(element, @"\b(without)\b"))
-                    return true;
-            }
-            return false;
         }
     }
 }

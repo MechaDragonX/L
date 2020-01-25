@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace L
 {
@@ -31,6 +32,72 @@ namespace L
             public Experience(string title, string location) : this(title)
             {
                 Location = location;
+            }
+
+            internal static string GetTitle(string input)
+            {
+                if(Regex.IsMatch(input, @".*(?=(\sat))"))
+                    return Regex.Match(input, @".*(?=(\sat))").Value;
+                return "";
+            }
+            internal static string GetLocation(string input)
+            {
+                if(Regex.IsMatch(input, @"(?<=(at\s)).*"))
+                    return Regex.Match(input, @"(?<=(at\s)).*").Value;
+                return "";
+            }
+            internal static DateTime GetStartDate(string input)
+            {
+                if(Regex.IsMatch(input, @".*(?=(\s[-–—]))"))
+                {
+                    if((Regex.Match(input, @".*(?=(\s[-–—]))").Value).Split(' ').Length == 1)
+                        return DateTimeParser.Parse(
+                            int.Parse(Regex.Match(input, @"\b(\d\d\d\d)\b").Value),
+                            Regex.Match(input, @".*(?=(\s[-–—]))").Value
+                            );
+                    return DateTime.Parse(Regex.Match(input, @".*(?=(\s[-–—]))").Value);
+                }
+                return DateTime.MinValue;
+            }
+            internal static DateTime GetEndDate(string input)
+            {
+                string match;
+                if(Regex.IsMatch(input, @"(?<=([-–—]\s)).*"))
+                {
+                    match = Regex.Match(input, @"(?<=([-–—]\s)).*").Value;
+                    if(match.ToLower() == "present" || match.ToLower() == "now")
+                        return DateTime.Today;
+                    else
+                        return DateTime.Parse(match);
+                }
+                return DateTime.MinValue;
+            }
+            internal static string[] GetResponsibilites(string[] input)
+            {
+                List<string> responsibilities = new List<string>();
+                Regex beforeAt = new Regex(@".*(?=(\sat))", RegexOptions.Compiled);
+                Regex afterAt = new Regex(@"(?<=(at\s)).*", RegexOptions.Compiled);
+                Regex beforeDash = new Regex(@".*(?=(\s[-–—]))", RegexOptions.Compiled);
+                Regex afterDash = new Regex(@"(?<=([-–—]\s)).*", RegexOptions.Compiled);
+
+                foreach(string element in input)
+                {
+                    if(
+                        !beforeAt.IsMatch(element) && !afterAt.IsMatch(element) &&
+                        !beforeDash.IsMatch(element) && !afterDash.IsMatch(element)
+                        )
+                        responsibilities.Add(element);
+                }
+                return responsibilities.ToArray();
+            }
+            internal static bool GetPaid(string[] input)
+            {
+                foreach(string element in input)
+                {
+                    if(Regex.IsMatch(element, @"\b(pay)\b") && !Regex.IsMatch(element, @"\b(without)\b"))
+                        return true;
+                }
+                return false;
             }
 
             /// <summary>
@@ -112,6 +179,40 @@ namespace L
             Summary = summary;
         }
 
+        public Experience GetExperience(string[] input)
+        {
+            Regex beforeAt = new Regex(@".*(?=(\sat))", RegexOptions.Compiled);
+            Regex afterAt = new Regex(@"(?<=(at\s)).*", RegexOptions.Compiled);
+            Regex beforeDash = new Regex(@".*(?=(\s[-–—]))", RegexOptions.Compiled);
+            Regex afterDash = new Regex(@"(?<=([-–—]\s)).*", RegexOptions.Compiled);
+
+            string title = "";
+            string location = "";
+            DateTime startDate = DateTime.MinValue;
+            DateTime endDate = DateTime.MinValue;
+
+            foreach (string element in input)
+            {
+                if (beforeAt.IsMatch(element) && title == "")
+                    title = Experience.GetTitle(element);
+                if (afterAt.IsMatch(element) && location == "")
+                    location = Experience.GetLocation(element);
+                if (beforeDash.IsMatch(element))
+                    startDate = Experience.GetStartDate(element);
+                if (afterDash.IsMatch(element))
+                    endDate = Experience.GetEndDate(element);
+            }
+
+            Experience experience = new Experience(title, location)
+            {
+                StartDate = startDate,
+                EndDate = endDate,
+                Responsibilities = Experience.GetResponsibilites(input),
+                Paid = Experience.GetPaid(input)
+            };
+
+            return experience;
+        }
         public void Serialize()
         {
             JsonSerializer serializer = new JsonSerializer();
