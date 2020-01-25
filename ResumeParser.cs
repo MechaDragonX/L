@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace L
 {
-    public class TextParser
+    public class ResumeParser
     {
         private static readonly Regex delimitersNoSpace = new Regex("[—;:/\\<>~*]+", RegexOptions.Compiled);
         private static readonly Regex delimitersWithSpace = new Regex("[\\s—;:/\\<>~*]+", RegexOptions.Compiled);
@@ -17,37 +17,76 @@ namespace L
         );
         private static readonly Regex phonePattern = new Regex("\\(?\\d{3}\\)?-? *\\d{3}-? *-?\\d{4}", RegexOptions.Compiled);
 
-        public Applicant App { get; }
         public string[] Lines { get; }
 
-        private TextParser()
-        {
-            App = new Applicant();
-        }
-        public TextParser(string[] lines) : this()
+        /// <summary>
+        /// Create a new Resume Parser
+        /// </summary>
+        public ResumeParser() { }
+        /// <summary>
+        /// Create a new Resume Parser
+        /// </summary>
+        /// <param name="lines">All the lines from the resume to parse</param>
+        public ResumeParser(string[] lines)
         {
             Lines = lines;
+        }
+
+        /// <summary>
+        /// Creates a new applicant from teh data of the resume that was passed into Resume Parser
+        /// </summary>
+        /// <returns></returns>
+        public Applicant Parse()
+        {
+            Applicant applicant = new Applicant();
+            try
+            {
+                // Profile Info
+                var name = GetName();
+                applicant.GivenName = name.Item1;
+                applicant.Surname = name.Item2;
+
+                applicant.Email = GetEmail();
+                applicant.PhoneNumber = GetPhoneNumber();
+                applicant.Address = GetAddress();
+
+                // Summary/Objective
+                applicant.Summary = GetSummary();
+
+                // Basic Education Details
+                applicant.HighSchool = GetHighSchool();
+                applicant.CollegeUG = GetCollegeUG();
+                applicant.CollegePG = GetCollegePG();
+
+                // Skills
+                applicant.UnsortedSkills = GetUnsortedSkills();
+                applicant.TechnicalSkills = GetTechnicalSkills();
+
+                // Experience
+                applicant.WorkXP = GetWorkExperience();
+                applicant.VolunteerXP = GetVolunteerExperience();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return applicant;
         }
 
         /// <summary>
         /// Gets the name of the applicant from the text of the applicant's resume and adds it to the applicant object
         /// </summary>
         /// <returns>Name in "[Given Name] [Surname]" format</returns>
-        public string GetName()
+        private Tuple<string, string> GetName()
         {
             string[] givenAndSurname = Lines[0].Split(' ');
-            App.GivenName = givenAndSurname[0];
-            App.Surname = givenAndSurname[1];
-
-            StringBuilder builder = new StringBuilder();
-            builder.AppendFormat("{0}, {1}", App.Surname, App.GivenName);
-            return builder.ToString();
+            return new Tuple<string, string>(givenAndSurname[0], givenAndSurname[1]);
         }
         /// <summary>
         /// Gets the email of the applicant from the text of the applicant's resume and adds it to the applicant object
         /// </summary>
         /// <returns>email</returns>
-        public string GetEmail()
+        private string GetEmail()
         {
             string emailLine = "";
             string email;
@@ -62,14 +101,13 @@ namespace L
             if(!emailPattern.IsMatch(emailLine))
                 return "";
             email = emailPattern.Match(emailLine).Value;
-            App.Email = email;
             return email;
         }
         /// <summary>
         /// Gets the phone number of the applicant from the text of the applicant's resume and adds it to the applicant object
         /// </summary>
         /// <returns>Phone Number</returns>
-        public string GetPhoneNumber()
+        private string GetPhoneNumber()
         {
             string numberLine = "";
             string phoneNumber = "";
@@ -84,14 +122,13 @@ namespace L
             if(!phonePattern.IsMatch(numberLine))
                 return "";
             phoneNumber = phonePattern.Match(numberLine).Value;
-            App.PhoneNumber = phoneNumber;
             return phoneNumber;
         }
         /// <summary>
         /// Gets the address of the applicant from the text of the applicant's resume and adds it to the applicant object
         /// </summary>
         /// <returns>Address</returns>
-        public string GetAddress()
+        private string GetAddress()
         {
             // string addressLine = "";
             string[] elements = null;
@@ -114,14 +151,13 @@ namespace L
                     break;
                 }
             }
-            App.Address = address;
             return address;
         }
         /// <summary>
         /// Gets the summary from the text of the applicant's resume and adds it to the applicant object
         /// </summary>
         /// <returns>Summary</returns>
-        public string GetSummary()
+        private string GetSummary()
         {
             List<string> current;
             string[] summArray = null;
@@ -145,7 +181,6 @@ namespace L
             }
             if(summArray == null)
             {
-                App.Summary = summary;
                 return summary;
             }
 
@@ -157,23 +192,18 @@ namespace L
                 else
                     builder.AppendFormat("{0} ", summArray[i]);
             }
-            summary = builder.ToString();
-            App.Summary = summary;
-            return summary;
+            return builder.ToString();
         }
         /// <summary>
         /// Gets the high school from the text of the applicant's resume and adds it to the applicant object
         /// </summary>
         /// <returns>High School</returns>
-        public string GetHighSchool()
+        private string GetHighSchool()
         {
             foreach(string line in Lines)
             {
                 if(line.ToLower().Contains("high school") && line.Split(' ').Length <= 8) // length of 8 to allow things like "Bob A. Ferguson High School, Grand Rapids, MI" (This school most likely doesn't exist)
-                {
-                    App.HighSchool = line;
                     return line;
-                }
             }
             return "";
         }
@@ -181,7 +211,7 @@ namespace L
         /// Gets the undergraduate college from the text of the applicant's resume and adds it to the applicant object
         /// </summary>
         /// <returns>Undergraduate College</returns>
-        public string GetCollegeUG()
+        private string GetCollegeUG()
         {
             string currentLineLower;
             foreach(string line in Lines)
@@ -197,10 +227,7 @@ namespace L
                     currentLineLower.Contains("undergraduate") || currentLineLower.Contains("undergrad") ||
                     Regex.IsMatch(currentLineLower, @"(?:\b|\W)(ug)(?:\b|\W)", RegexOptions.IgnoreCase)
                     )
-                {
-                    App.CollegeUG = line;
                     return line;
-                }
             }
             return "";
         }
@@ -208,7 +235,7 @@ namespace L
         /// Gets the postgraduate college from the text of the applicant's resume and adds it to the applicant object
         /// </summary>
         /// <returns>Postgraduate College</returns>
-        public string GetCollegePG()
+        private string GetCollegePG()
         {
             string currentLineLower;
             foreach(string line in Lines)
@@ -224,10 +251,7 @@ namespace L
                     currentLineLower.Contains("postgraduate") || currentLineLower.Contains("postgrad") ||
                     Regex.IsMatch(currentLineLower, @"(?:\b|\W)(pg)(?:\b|\W)", RegexOptions.IgnoreCase)
                     )
-                {
-                    App.CollegeUG = line;
                     return line;
-                }
             }
             return "";
         }
@@ -235,7 +259,7 @@ namespace L
         /// Gets all unsorted skills from the text of the applicant's resume and adds it to the applicant object
         /// </summary>
         /// <returns>string[] where each skill is different element</returns>
-        public string[] GetUnsortedSkills()
+        private string[] GetUnsortedSkills()
         {
             string current;
             int startIndex = -1;
@@ -258,15 +282,13 @@ namespace L
                         skills.Add(Lines[i]);
                 }
             }
-
-            App.UnsortedSkills = skills.ToArray();
             return skills.ToArray();
         }
         /// <summary>
         /// Gets all technical skills from the text of the applicant's resume and adds it to the applicant object
         /// </summary>
         /// <returns>string[] where each skill is different element</returns>
-        public string[] GetTechnicalSkills()
+        private string[] GetTechnicalSkills()
         {
             string current;
             int startIndex = -1;
@@ -289,14 +311,13 @@ namespace L
                         skills.Add(Lines[i]);
                 }
             }
-            App.UnsortedSkills = skills.ToArray();
             return skills.ToArray();
         }
         /// <summary>
         /// Gets all Work Experience from the text of the applicant's resume and adds it to the applicant object
         /// </summary>
         /// <returns>An array of each experience entry</returns>
-        public Applicant.Experience[] GetWorkExperience()
+        private Applicant.Experience[] GetWorkExperience()
         {
             string current;
             int startIndex = -1;
@@ -342,14 +363,13 @@ namespace L
                     CheckIfEnd(current, ref startIndex, ref started, input, experience, ref i);
                 }
             }
-            App.WorkXP = experience.ToArray();
             return experience.ToArray();
         }
         /// <summary>
         /// Gets all Volunteer Experience from the text of the applicant's resume and adds it to the applicant object
         /// </summary>
         /// <returns>An array of each experience entry</returns>
-        public Applicant.Experience[] GetVolunteerExperience()
+        private Applicant.Experience[] GetVolunteerExperience()
         {
             string current;
             int startIndex = -1;
@@ -395,7 +415,6 @@ namespace L
                     CheckIfEnd(current, ref startIndex, ref started, input, experience, ref i);
                 }
             }
-            App.VolunteerXP = experience.ToArray();
             return experience.ToArray();
         }
         private void CheckIfEnd(string current, ref int startIndex, ref bool started, List<string> input, List<Applicant.Experience> experience, ref int i)
@@ -416,7 +435,7 @@ namespace L
                     {
                         started = false;
                         startIndex = -1;
-                        experience.Add(App.GetExperience(input.ToArray()));
+                        experience.Add(Applicant.GetExperience(input.ToArray()));
                         input.Clear();
                         i--;
                     }

@@ -179,7 +179,7 @@ namespace L
             Summary = summary;
         }
 
-        public Experience GetExperience(string[] input)
+        public static Experience GetExperience(string[] input)
         {
             Regex beforeAt = new Regex(@".*(?=(\sat))", RegexOptions.Compiled);
             Regex afterAt = new Regex(@"(?<=(at\s)).*", RegexOptions.Compiled);
