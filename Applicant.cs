@@ -32,6 +32,15 @@ namespace L
             {
                 Location = location;
             }
+
+            /// <summary>
+            /// String representation of an Applicant
+            /// </summary>
+            /// <returns>A JSON format string</returns>
+            public override string ToString()
+            {
+                return JsonConvert.SerializeObject(this, Formatting.Indented);
+            }
         }
 
         // Contact Info
@@ -132,7 +141,7 @@ namespace L
         /// <returns>A JSON format string</returns>
         public override string ToString()
         {
-            return JsonConvert.SerializeObject(this);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
     }
 }

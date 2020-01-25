@@ -297,6 +297,7 @@ namespace L
         {
             string current;
             int startIndex = -1;
+            bool started = false;
             List<string> input = new List<string>();
             List<Applicant.Experience> experience = new List<Applicant.Experience>();
             for(int i = 0; i < Lines.Length; i++)
@@ -304,40 +305,133 @@ namespace L
                 current = delimitersNoSpace.Replace(Lines[i].ToLower().Trim(), "");
                 if(startIndex == -1)
                 {
-                    if(
-                        Regex.IsMatch(current, @"\b(experience)\b") &&
-                        Regex.IsMatch(current, @"\b(work)\b") || Regex.IsMatch(current, @"\b(technical)\b")
-                        )
+                    if(experience.Count == 0)
                     {
-                        startIndex = i + 1;
+                        if (
+                            Regex.IsMatch(current, @"\b(experience)\b") &&
+                            (Regex.IsMatch(current, @"\b(work)\b") || Regex.IsMatch(current, @"\b(technical)\b")) &&
+                            !Regex.IsMatch(current, @"\b(volunteer)\b")
+                            )
+                        {
+                            startIndex = i + 1;
+                        }
+                    }
+                    else
+                    {
+                        if (
+                            Regex.IsMatch(current, @".*(?=(\sat))") || Regex.IsMatch(current, @"(?<=(at\s)).*")
+                            )
+                        {
+                            startIndex = i;
+                            started = true;
+                            input.Add(Lines[i]);
+                        }
+                        else if(
+                            Regex.IsMatch(current, @"\b(experience)\b") &&
+                            ((Regex.IsMatch(current, @"\b(work)\b") || Regex.IsMatch(current, @"\b(technical)\b")) ||
+                            Regex.IsMatch(current, @"\b(volunteer)\b"))
+                            )
+                            break;
                     }
                 }
                 else
                 {
-                    if (
-                        Regex.IsMatch(current, @"\b(experience)\b") &&
-                        Regex.IsMatch(current, @"\b(work)\b") || Regex.IsMatch(current, @"\b(technical)\b")
-                        )
+                    CheckIfEnd(current, ref startIndex, ref started, input, experience, ref i);
+                }
+            }
+            App.WorkXP = experience.ToArray();
+            return experience.ToArray();
+        }
+        public Applicant.Experience[] GetVolunteerExperience()
+        {
+            string current;
+            int startIndex = -1;
+            bool started = false;
+            List<string> input = new List<string>();
+            List<Applicant.Experience> experience = new List<Applicant.Experience>();
+            for (int i = 0; i < Lines.Length; i++)
+            {
+                current = delimitersNoSpace.Replace(Lines[i].ToLower().Trim(), "");
+                if (startIndex == -1)
+                {
+                    if (experience.Count == 0)
                     {
-                        startIndex = -1;
-                        experience.Add(GetExperience(input.ToArray()));
+                        if (
+                            Regex.IsMatch(current, @"\b(experience)\b") &&
+                            (!Regex.IsMatch(current, @"\b(work)\b") || !Regex.IsMatch(current, @"\b(technical)\b")) &&
+                            Regex.IsMatch(current, @"\b(volunteer)\b")
+                            )
+                        {
+                            startIndex = i + 1;
+                        }
                     }
                     else
                     {
-                        input.Add(Lines[i]);
+                        if (
+                            Regex.IsMatch(current, @".*(?=(\sat))") || Regex.IsMatch(current, @"(?<=(at\s)).*")
+                            )
+                        {
+                            startIndex = i;
+                            started = true;
+                            input.Add(Lines[i]);
+                        }
+                        else if (
+                            Regex.IsMatch(current, @"\b(experience)\b") &&
+                            ((Regex.IsMatch(current, @"\b(work)\b") || Regex.IsMatch(current, @"\b(technical)\b")) ||
+                            Regex.IsMatch(current, @"\b(volunteer)\b"))
+                            )
+                            break;
                     }
                 }
+                else
+                {
+                    CheckIfEnd(current, ref startIndex, ref started, input, experience, ref i);
+                }
             }
+            App.VolunteerXP = experience.ToArray();
             return experience.ToArray();
         }
+        private void CheckIfEnd(string current, ref int startIndex, ref bool started, List<string> input, List<Applicant.Experience> experience, ref int i)
+        {
+            if(started)
+            {
+                if(
+                    ((Regex.IsMatch(current, @".*(?=(\sat))") || Regex.IsMatch(current, @"(?<=(at\s)).*")) ||
+                    (Regex.IsMatch(current, @"\b(work)\b") || Regex.IsMatch(current, @"\b(technical)\b"))) ||
+                    Regex.IsMatch(current, @"\b(volunteer)\b")
+                    )
+                {
+                    if(
+                        !Regex.IsMatch(current, @"\b(pay)\b") ||
+                        (Regex.IsMatch(current, @"\b(volunteer)\b") || Regex.IsMatch(current, @"\b(experience)\b")) ||
+                        (Regex.IsMatch(current, @"\b(work)\b") || Regex.IsMatch(current, @"\b(technical)\b"))
+                        )
+                    {
+                        started = false;
+                        startIndex = -1;
+                        experience.Add(GetExperience(input.ToArray()));
+                        input.Clear();
+                        i--;
+                    }
+                    else
+                        input.Add(Lines[i]);
+                }
+                else
+                    input.Add(Lines[i]);
+            }
+            else
+            {
+                started = true;
+                input.Add(Lines[i]);
+            }
+        }
+
         public Applicant.Experience GetExperience(string[] input)
         {
             Regex beforeAt = new Regex(@".*(?=(\sat))", RegexOptions.Compiled);
             Regex afterAt = new Regex(@"(?<=(at\s)).*", RegexOptions.Compiled);
-            Regex beforeFor = new Regex(@".*(?=(\sfor))", RegexOptions.Compiled);
-            Regex afterFor = new Regex(@"(?<=(for\s)).*", RegexOptions.Compiled);
-            Regex beforeDash = new Regex(@".*(?=(\s-))", RegexOptions.Compiled);
-            Regex afterDash = new Regex(@"(?<=(-\s)).*", RegexOptions.Compiled);
+            Regex beforeDash = new Regex(@".*(?=(\s[-–—]))", RegexOptions.Compiled);
+            Regex afterDash = new Regex(@"(?<=([-–—]\s)).*", RegexOptions.Compiled);
 
             string title = "";
             string location = "";
@@ -346,56 +440,57 @@ namespace L
 
             foreach(string element in input)
             {
-                if((beforeAt.IsMatch(element) || beforeFor.IsMatch(element)) && title == "")
-                    title = getTitle(element);
-                if((afterAt.IsMatch(element) || afterFor.IsMatch(element)) && location == "")
-                    location = getLocation(element);
+                if(beforeAt.IsMatch(element) && title == "")
+                    title = GetTitle(element);
+                if(afterAt.IsMatch(element) && location == "")
+                    location = GetLocation(element);
                 if(beforeDash.IsMatch(element))
-                    startDate = getStartDate(element);
+                    startDate = GetStartDate(element);
                 if(afterDash.IsMatch(element))
-                    endDate = getEndDate(element);
+                    endDate = GetEndDate(element);
             }
 
             Applicant.Experience experience = new Applicant.Experience(title, location)
             {
                 StartDate = startDate,
                 EndDate = endDate,
-                Responsibilities = getResponsibilites(input),
-                Paid = getPaid(input)
+                Responsibilities = GetResponsibilites(input),
+                Paid = GetPaid(input)
             };
 
             return experience;
         }
-        private string getTitle(string input)
+        private string GetTitle(string input)
         {
             if(Regex.IsMatch(input, @".*(?=(\sat))"))
                 return Regex.Match(input, @".*(?=(\sat))").Value;
-            if(Regex.IsMatch(input, @".*(?=(\sfor))"))
-                return Regex.Match(input, @".*(?=(\sfor))").Value;
             return "";
         }
-        private string getLocation(string input)
+        private string GetLocation(string input)
         {
             if(Regex.IsMatch(input, @"(?<=(at\s)).*"))
                 return Regex.Match(input, @"(?<=(at\s)).*").Value;
-            if(Regex.IsMatch(input, @"(?<=(for\s)).*"))
-                return Regex.Match(input, @"(?<=(for\s)).*").Value;
             return "";
         }
-        private DateTime getStartDate(string input)
+        private DateTime GetStartDate(string input)
         {
-            if(Regex.IsMatch(input, @".*(?=(\s-))"))
-                return DateTime.Parse(Regex.Match(input, @".*(?=(\s-))").Value);
-            if(Regex.IsMatch(input, @".*(?=(\sto))"))
-                return DateTime.Parse(Regex.Match(input, @".*(?=(\sto))").Value);
+            if(Regex.IsMatch(input, @".*(?=(\s[-–—]))"))
+            {
+                if((Regex.Match(input, @".*(?=(\s[-–—]))").Value).Split(' ').Length == 1)
+                    return DateTimeParser.Parse(
+                        int.Parse(Regex.Match(input, @"\b(\d\d\d\d)\b").Value),
+                        Regex.Match(input, @".*(?=(\s[-–—]))").Value
+                        );
+                return DateTime.Parse(Regex.Match(input, @".*(?=(\s[-–—]))").Value);
+            }
             return DateTime.MinValue;
         }
-        private DateTime getEndDate(string input)
+        private DateTime GetEndDate(string input)
         {
             string match;
-            if(Regex.IsMatch(input, @"(?<=(-\s)).*"))
+            if(Regex.IsMatch(input, @"(?<=([-–—]\s)).*"))
             {
-                match = Regex.Match(input, @"(?<=(-\s)).*").Value;
+                match = Regex.Match(input, @"(?<=([-–—]\s)).*").Value;
                 if(match.ToLower() == "present" || match.ToLower() == "now")
                     return DateTime.Today;
                 else
@@ -403,30 +498,25 @@ namespace L
             }
             return DateTime.MinValue;
         }
-        private string[] getResponsibilites(string[] input)
+        private string[] GetResponsibilites(string[] input)
         {
             List<string> responsibilities = new List<string>();
             Regex beforeAt = new Regex(@".*(?=(\sat))", RegexOptions.Compiled);
             Regex afterAt = new Regex(@"(?<=(at\s)).*", RegexOptions.Compiled);
-            Regex beforeFor = new Regex(@".*(?=(\sfor))", RegexOptions.Compiled);
-            Regex afterFor = new Regex(@"(?<=(for\s)).*", RegexOptions.Compiled);
-            Regex beforeDash = new Regex(@".*(?=(\s-))", RegexOptions.Compiled);
-            Regex afterDash = new Regex(@"(?<=(-\s)).*", RegexOptions.Compiled);
-            Regex containsPay = new Regex(@"\b(pay)\b", RegexOptions.Compiled);
+            Regex beforeDash = new Regex(@".*(?=(\s[-–—]))", RegexOptions.Compiled);
+            Regex afterDash = new Regex(@"(?<=([-–—]\s)).*", RegexOptions.Compiled);
 
             foreach (string element in input)
             {
                 if(
                     !beforeAt.IsMatch(element) && !afterAt.IsMatch(element) &&
-                    !beforeFor.IsMatch(element) && !afterFor.IsMatch(element) &&
-                    !beforeDash.IsMatch(element) && !afterDash.IsMatch(element) &&
-                    !containsPay.IsMatch(element)
+                    !beforeDash.IsMatch(element) && !afterDash.IsMatch(element)
                     )
                     responsibilities.Add(element);
             }
             return responsibilities.ToArray();
         }
-        private bool getPaid(string[] input)
+        private bool GetPaid(string[] input)
         {
             foreach(string element in input)
             {
