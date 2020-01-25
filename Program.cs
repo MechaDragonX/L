@@ -21,7 +21,11 @@ namespace L
 
 			ResumeParser resumeParser = new ResumeParser(lines);
 			Applicant applicant = resumeParser.Parse();
-			Console.WriteLine(applicant);
+			// Console.WriteLine(applicant);
+			applicant.Serialize();
+			Console.WriteLine("\nAll done!! ^_^\nThe Applicant's data was written to the file \"<surname>, <given name>.json\"!");
+			Console.WriteLine("Thanks for using the program!");
+			Console.ReadLine();
 		}
 		private static void PrintArray<T>(T[] array)
 		{
