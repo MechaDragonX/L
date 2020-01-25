@@ -63,6 +63,7 @@ namespace L
                 applicant.TechnicalSkills = GetTechnicalSkills();
 
                 // Experience
+                applicant.EducationalXP = GetEducationalExperience();
                 applicant.WorkXP = GetWorkExperience();
                 applicant.VolunteerXP = GetVolunteerExperience();
             }
@@ -165,7 +166,7 @@ namespace L
             for(int i = 0; i < Lines.Length; i++)
             {
                 current = Lines[i].Split(' ').ToList();
-                if (current[0].ToLower().Contains("summary") || current[0].ToLower().Contains("objective"))
+                if(current[0].ToLower().Contains("summary") || current[0].ToLower().Contains("objective"))
                 {
                     if (current.Count > 1)
                     {
@@ -217,7 +218,7 @@ namespace L
             foreach(string line in Lines)
             {
                 currentLineLower = line.ToLower();
-                if (currentLineLower.Contains("bachelor of") ||
+                if(currentLineLower.Contains("bachelor of") ||
                     Regex.IsMatch(currentLineLower, @"(?:\b|\W)(bs)(?:\b|\W)", RegexOptions.IgnoreCase) ||
                     Regex.IsMatch(currentLineLower, @"(?:\b|\W)(b.s.)(?:\b|\W)", RegexOptions.IgnoreCase) ||
                     Regex.IsMatch(currentLineLower, @"(?:\b|\W)(ba)(?:\b|\W)", RegexOptions.IgnoreCase) ||
@@ -296,16 +297,16 @@ namespace L
             for(int i = 0; i < Lines.Length; i++)
             {
                 current = delimitersNoSpace.Replace(Lines[i].ToLower().Trim(), "");
-                if (startIndex == -1)
+                if(startIndex == -1)
                 {
                     // Make sure it's a header
-                    if (Lines[i].Split().Length <= 3 && (current.Contains("skills") && current.Contains("technical")))
+                    if(Lines[i].Split().Length <= 3 && (current.Contains("skills") && current.Contains("technical")))
                         startIndex++;
                 }
                 else
                 {
                     // Make sure it's a header
-                    if (Lines[i].Split().Length <= 3 && (current.Contains("skills") || current.Contains("experience")))
+                    if(Lines[i].Split().Length <= 3 && (current.Contains("skills") || current.Contains("experience")))
                         break;
                     else
                         skills.Add(Lines[i]);
@@ -331,7 +332,7 @@ namespace L
                 {
                     if(experience.Count == 0)
                     {
-                        if (
+                        if(
                             Regex.IsMatch(current, @"\b(experience)\b") &&
                             (Regex.IsMatch(current, @"\b(work)\b") || Regex.IsMatch(current, @"\b(technical)\b")) &&
                             !Regex.IsMatch(current, @"\b(volunteer)\b")
@@ -342,7 +343,7 @@ namespace L
                     }
                     else
                     {
-                        if (
+                        if(
                             Regex.IsMatch(current, @".*(?=(\sat))") || Regex.IsMatch(current, @"(?<=(at\s)).*")
                             )
                         {
@@ -376,14 +377,14 @@ namespace L
             bool started = false;
             List<string> input = new List<string>();
             List<Applicant.Experience> experience = new List<Applicant.Experience>();
-            for (int i = 0; i < Lines.Length; i++)
+            for(int i = 0; i < Lines.Length; i++)
             {
                 current = delimitersNoSpace.Replace(Lines[i].ToLower().Trim(), "");
-                if (startIndex == -1)
+                if(startIndex == -1)
                 {
-                    if (experience.Count == 0)
+                    if(experience.Count == 0)
                     {
-                        if (
+                        if(
                             Regex.IsMatch(current, @"\b(experience)\b") &&
                             (!Regex.IsMatch(current, @"\b(work)\b") || !Regex.IsMatch(current, @"\b(technical)\b")) &&
                             Regex.IsMatch(current, @"\b(volunteer)\b")
@@ -394,7 +395,7 @@ namespace L
                     }
                     else
                     {
-                        if (
+                        if(
                             Regex.IsMatch(current, @".*(?=(\sat))") || Regex.IsMatch(current, @"(?<=(at\s)).*")
                             )
                         {
@@ -402,7 +403,7 @@ namespace L
                             started = true;
                             input.Add(Lines[i]);
                         }
-                        else if (
+                        else if(
                             Regex.IsMatch(current, @"\b(experience)\b") &&
                             ((Regex.IsMatch(current, @"\b(work)\b") || Regex.IsMatch(current, @"\b(technical)\b")) ||
                             Regex.IsMatch(current, @"\b(volunteer)\b"))
@@ -449,6 +450,73 @@ namespace L
             {
                 started = true;
                 input.Add(Lines[i]);
+            }
+        }
+        /// <summary>
+        /// Gets all Educational Experience from the text of the applicant's resume and adds it to the applicant object
+        /// </summary>
+        /// <returns>An array of each entry</returns>
+        private string[] GetEducationalExperience()
+        {
+            string current;
+            int startIndex = -1;
+            bool started = false;
+            List<string> experience = new List<string>();
+            for(int i = 0; i < Lines.Length; i++)
+            {
+                current = delimitersNoSpace.Replace(Lines[i].ToLower().Trim(), "");
+                if(startIndex == -1)
+                {
+                    if(
+                        ((!Regex.IsMatch(current, @"\b(work)\b") || !Regex.IsMatch(current, @"\b(technical)\b")) &&
+                        !Regex.IsMatch(current, @"\b(volunteer)\b")) &&
+
+                        (
+                            Regex.IsMatch(current, @"\b(education)\b") ||
+                            (Regex.IsMatch(current, @"\b(educational)\b") && Regex.IsMatch(current, @"\b(experience)\b"))
+                        )
+                        )
+                    {
+                        startIndex = i + 1;
+                    }
+                }
+                else
+                {
+                    CheckIfEnd(current, ref startIndex, ref started, experience, ref i);
+                }
+            }
+            return experience.ToArray();
+        }
+        private void CheckIfEnd(string current, ref int startIndex, ref bool started, List<string> experience, ref int i)
+        {
+            if(started)
+            {
+                if(
+                    ((Regex.IsMatch(current, @".*(?=(\sat))") || Regex.IsMatch(current, @"(?<=(at\s)).*")) ||
+                    (Regex.IsMatch(current, @"\b(work)\b") || Regex.IsMatch(current, @"\b(technical)\b"))) ||
+                    Regex.IsMatch(current, @"\b(volunteer)\b")
+                    )
+                {
+                    if(
+                        !Regex.IsMatch(current, @"\b(pay)\b") ||
+                        (Regex.IsMatch(current, @"\b(volunteer)\b") || Regex.IsMatch(current, @"\b(experience)\b")) ||
+                        (Regex.IsMatch(current, @"\b(work)\b") || Regex.IsMatch(current, @"\b(technical)\b"))
+                        )
+                    {
+                        started = false;
+                        startIndex = -1;
+                        experience.ToArray();
+                    }
+                    else
+                        experience.Add(Lines[i]);
+                }
+                else
+                    experience.Add(Lines[i]);
+            }
+            else
+            {
+                started = true;
+                experience.Add(Lines[i]);
             }
         }
     }

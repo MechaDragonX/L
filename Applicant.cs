@@ -140,7 +140,7 @@ namespace L
         public string CollegePG { get; set; }
 
         [JsonProperty("Educational Experience")]
-        public Experience[] EducationalXP { get; set; }
+        public string[] EducationalXP { get; set; }
 
         [JsonProperty("Work Experience")]
         public Experience[] WorkXP { get; set; }
@@ -191,15 +191,15 @@ namespace L
             DateTime startDate = DateTime.MinValue;
             DateTime endDate = DateTime.MinValue;
 
-            foreach (string element in input)
+            foreach(string element in input)
             {
-                if (beforeAt.IsMatch(element) && title == "")
+                if(beforeAt.IsMatch(element) && title == "")
                     title = Experience.GetTitle(element);
-                if (afterAt.IsMatch(element) && location == "")
+                if(afterAt.IsMatch(element) && location == "")
                     location = Experience.GetLocation(element);
-                if (beforeDash.IsMatch(element))
+                if(beforeDash.IsMatch(element))
                     startDate = Experience.GetStartDate(element);
-                if (afterDash.IsMatch(element))
+                if(afterDash.IsMatch(element))
                     endDate = Experience.GetEndDate(element);
             }
 
