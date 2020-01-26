@@ -213,18 +213,40 @@ namespace L
 
             return experience;
         }
-        public void Serialize()
+        public void Serialize(bool deploy)
         {
             JsonSerializer serializer = new JsonSerializer();
             serializer.Formatting = Formatting.Indented;
 
-            string projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-            string name = string.Format("{0}, {1}", Surname, GivenName);
-            using(StreamWriter sWriter = new StreamWriter(Path.Join(projectDir, "out", name + ".json")))
-            using(JsonWriter jWriter = new JsonTextWriter(sWriter))
+            string directory = "";
+            string yesNo;
+            Console.WriteLine("Do you want to send the \".json\" file to a custom folder? (Y or N)");
+            while(true)
             {
-                serializer.Serialize(jWriter, this);
+                yesNo = Console.ReadLine().Trim().ToLower();
+                if(yesNo == "y")
+                {
+                    Console.WriteLine("Please type the path to the output directory.");
+                    directory = Console.ReadLine();
+                    break;
+                }
+                else if (yesNo == "n")
+                {
+                    if(!deploy)
+                        directory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
+                    else
+                        directory = Environment.CurrentDirectory;
+                    break;
+                }
+                else
+                    Console.WriteLine("Please type yes or no!\n");
             }
+
+            string name = string.Format("{0}, {1}", Surname, GivenName);
+            Directory.CreateDirectory(Path.Join(directory, "out"));
+            using (StreamWriter sWriter = new StreamWriter(Path.Join(directory, "out", name + ".json")))
+            using(JsonWriter jWriter = new JsonTextWriter(sWriter))
+                serializer.Serialize(jWriter, this);
         }
         /// <summary>
         /// Deserialize and Applicant object from a JSON file
