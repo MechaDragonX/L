@@ -493,8 +493,8 @@ namespace L
             {
                 if(
                     ((Regex.IsMatch(current, @".*(?=(\sat))") || Regex.IsMatch(current, @"(?<=(at\s)).*")) ||
-                    (Regex.IsMatch(current, @"\b(work)\b") || Regex.IsMatch(current, @"\b(technical)\b"))) ||
-                    Regex.IsMatch(current, @"\b(volunteer)\b")
+                    ((Regex.IsMatch(current, @"\b(work)\b") || Regex.IsMatch(current, @"\b(technical)\b"))) ||
+                    Regex.IsMatch(current, @"\b(volunteer)\b")) || Regex.IsMatch(current, @"\b(skills)\b")
                     )
                 {
                     if(
