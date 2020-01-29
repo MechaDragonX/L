@@ -9,7 +9,7 @@ namespace L
 		static void Main(string[] args)
 		{
 			Console.WriteLine("welcome to the resume parsing algorithm, l!");
-			Console.WriteLine("this algorithm was written by raghav vivek and was named after an anime character who's known for deuction and detective skills.\n");
+			Console.WriteLine("this algorithm was written by raghav vivek and was named after an anime character who's known for deduction and detective skills.\n");
 			Console.WriteLine("please type the path to the file to parse:");
 			string path = Console.ReadLine();
 
