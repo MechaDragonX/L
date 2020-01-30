@@ -8,9 +8,9 @@ namespace L
 	{
 		static void Main(string[] args)
 		{
-			Console.WriteLine("welcome to the resume parsing algorithm, l!");
-			Console.WriteLine("this algorithm was written by raghav vivek and was named after an anime character who's known for deduction and detective skills.\n");
-			Console.WriteLine("please type the path to the file to parse:");
+			Console.WriteLine("Welcome to the resume parsing algorithm, L!");
+			Console.WriteLine("This algorithm was written by Raghav Vivek and was named after an anime character who's known for deduction and detective skills.\n");
+			Console.WriteLine("Please type the path to the file to parse:");
 			string path = Console.ReadLine();
 
 			// string projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
