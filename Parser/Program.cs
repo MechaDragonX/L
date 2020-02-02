@@ -23,7 +23,7 @@ namespace L
 			Applicant applicant = resumeParser.Parse();
 			// Console.WriteLine(applicant);
 			applicant.Serialize(true);
-			Console.WriteLine("\nAll done!! ^_^\nThe Applicant's data was written to the file \"<surname>, <given name>.json\" in the \"out\"!");
+			Console.WriteLine("\nAll done!! ^_^\nThe Applicant's data was written to the file \"<surname>, <given name>.json\" in a \"out\" folder in the provided folder!");
 			Console.WriteLine("Thanks for using the program!");
 			Console.ReadLine();
 		}

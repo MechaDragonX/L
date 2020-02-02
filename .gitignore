@@ -342,3 +342,8 @@ healthchecksdb
 # Data and Output Files
 data/
 out/
+
+# Node Files
+node_modules/
+config.json
+package-lock.json
