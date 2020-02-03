@@ -343,6 +343,9 @@ healthchecksdb
 data/
 out/
 
+# VS Code Workspace
+*.code-workspace
+
 # Node Files
 node_modules/
 config.json
