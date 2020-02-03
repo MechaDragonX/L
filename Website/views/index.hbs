@@ -3,6 +3,14 @@
         <h1>{{message}}</h1>
     </div>
 {{/if}}
+{{#if success}}
+    <div>
+        <h1>File uploaded to S3 successfully!</h1>
+        <p>
+            You can view it <a href={{data.Location}}>here</a>!
+        </p>
+    </div>
+{{/if}}
 <div>
     <h1>Welcome to the resume upload tool!</h1>
     <p>Please upload your resume here: </p>

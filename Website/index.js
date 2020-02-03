@@ -26,8 +26,8 @@ app.post('/', (req, res) => {
         return res.render('index', { title: 'Resume Upload Tool', error: true, message: 'Unsupported File Type!' });
     uploadFile(s3, req.files.resume, (err, data) => {
         if(err)
-            return res.render('index', { title: 'Resume Upload Tool', error: true, message: 'Something went Wrong!' });;
-        return res.render('success', { title: 'Resume Upload Tool', data });
+            return res.render('index', { title: 'Resume Upload Tool', error: true, message: 'Something went Wrong!' });
+        return res.render('index', { title: 'Resume Upload Tool', success: true, data });
     });
 });
 
