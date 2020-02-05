@@ -1,12 +1,19 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using Amazon.S3;
+using Amazon.S3.Model;
+using Amazon;
+using System.Threading;
+using System.Threading.Tasks;
+using Amazon.Runtime.CredentialManagement;
+using Amazon.Runtime;
 
 namespace L
 {
 	class Program
 	{
-		static void Main(string[] args)
+		public static void Main(string[] args)
 		{
 			Console.WriteLine("Welcome to the resume parsing algorithm, L!");
 			Console.WriteLine("This algorithm was written by Raghav Vivek and was named after an anime character who's known for deduction and detective skills.\n");

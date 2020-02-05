@@ -2,6 +2,6 @@
 {
     interface IFileParser
     {
-        public string[] ExtractAllLines(string path);
+        string[] ExtractAllLines(string path);
     }
 }
