@@ -350,3 +350,6 @@ out/
 node_modules/
 config.json
 package-lock.json
+
+# AWS Credential Information and Lambda Function Metadata
+LambdaFunction/aws-lambda-tools-defaults.json
