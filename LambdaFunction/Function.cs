@@ -56,6 +56,7 @@ namespace ResumeParser
             {
 
                 Stream stream =  await S3Client.GetObjectStreamAsync(s3Event.Bucket.Name, s3Event.Object.Key, null);
+                // FileParser.ExractAllLinesFromS3(stream, s3Event.Object.Key);
                 context.Logger.LogLine($"Stream Length: {stream.Length} bytes");
                 return "Success!";
             }

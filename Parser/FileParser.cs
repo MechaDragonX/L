@@ -31,7 +31,7 @@ namespace L
             if(!parsers.ContainsKey(Path.GetExtension(path)))
                throw new FileFormatException();
 
-            var parser = parsers[Path.GetExtension(path)];
+            IFileParser parser = parsers[Path.GetExtension(path)];
             if(parser == null)
                 return File.ReadAllLines(path);
             return parser.ExtractAllLines(path);
@@ -40,19 +40,18 @@ namespace L
         /// <summary>
         /// Extract each line from a given file
         /// </summary>
+        /// <param name="stream">/The file's IO Stream</param>
         /// <param name="key">The file's key (the name)</param>
         /// <returns>Each line as a string[] element</returns>
-        public static string[] ExtractAllLinesFromS3(string key)
+        public static string[] ExtractAllLinesFromS3(Stream stream, string key)
         {
-            if(!File.Exists(key))
-               throw new FileNotFoundException();
-
             if(!parsers.ContainsKey(Path.GetExtension(key)))
                throw new FileFormatException();
 
-            var parser = parsers[Path.GetExtension(key)];
-            if (parser == null)
-                return File.ReadAllLines(key);
+            IFileParser parser = parsers[Path.GetExtension(key)];
+            if(parser == null)
+                throw new FileFormatException();
+                // return File.ReadAllLines(key);
             return parser.ExtractAllLines(key);
         }
     }
