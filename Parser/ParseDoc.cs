@@ -31,5 +31,9 @@ namespace L
         {
             throw new NotImplementedException();
         }
+        public string[] ExtractAllLines(System.IO.Stream stream)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
