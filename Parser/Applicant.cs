@@ -11,17 +11,17 @@ namespace L
     {
         public class Experience
         {
-            [JsonProperty("Title")]
+            [JsonProperty("title")]
             public string Title { get; set; }
-            [JsonProperty("Location")]
+            [JsonProperty("location")]
             public string Location { get; set; }
-            [JsonProperty("Start Date")]
+            [JsonProperty("startDate")]
             public DateTime StartDate { get; set; }
-            [JsonProperty("End Date")]
+            [JsonProperty("endDate")]
             public DateTime EndDate { get; set; }
-            [JsonProperty("Responsibilities")]
+            [JsonProperty("responsibilities")]
             public string[] Responsibilities { get; set; }
-            [JsonProperty("Paid?")]
+            [JsonProperty("paid?")]
             public bool Paid { get; set; }
 
             public Experience() { }
@@ -111,47 +111,47 @@ namespace L
         }
 
         // Contact Info
-        [JsonProperty("Given Name")]
+        [JsonProperty("givenName")]
         public string GivenName { get; set; }
 
-        [JsonProperty("Surname")]
+        [JsonProperty("surname")]
         public string Surname { get; set; }
 
-        [JsonProperty("Email")]
+        [JsonProperty("email")]
         public string Email { get; set; }
 
-        [JsonProperty("Phone Number")]
+        [JsonProperty("phoneNumber")]
         public string PhoneNumber { get; set; }
 
-        [JsonProperty("Address")]
+        [JsonProperty("address")]
         public string Address { get; set; }
 
-        [JsonProperty("Summary")]
+        [JsonProperty("summary")]
         public string Summary { get; set; }
 
         // Experience, Skills, and Abilities
-        [JsonProperty("High School")]
+        [JsonProperty("highSchool")]
         public string HighSchool { get; set; }
 
-        [JsonProperty("College UG")]
+        [JsonProperty("collegeUG")]
         public string CollegeUG { get; set; }
 
-        [JsonProperty("College PG")]
+        [JsonProperty("collegePG")]
         public string CollegePG { get; set; }
 
-        [JsonProperty("Educational Experience")]
+        [JsonProperty("educationalExperience")]
         public string[] EducationalXP { get; set; }
 
-        [JsonProperty("Work Experience")]
+        [JsonProperty("workExperience")]
         public Experience[] WorkXP { get; set; }
 
-        [JsonProperty("Volunteer Experience")]
+        [JsonProperty("volunteerExperience")]
         public Experience[] VolunteerXP { get; set; }
 
-        [JsonProperty("Technical Skills")]
+        [JsonProperty("technicalSkills")]
         public string[] TechnicalSkills { get; set; }
 
-        [JsonProperty("Unsorted Skills")]
+        [JsonProperty("unsortedSkills")]
         public string[] UnsortedSkills { get; set; }
 
         public Applicant() { }
