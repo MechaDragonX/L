@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-
+using System.Web;
+using Amazon;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.S3Events;
 using Amazon.S3;
@@ -54,8 +55,9 @@ namespace ResumeParser
 
             try
             {
-
-                Stream stream =  await S3Client.GetObjectStreamAsync(s3Event.Bucket.Name, s3Event.Object.Key, null);
+                string decodedKey = HttpUtility.UrlDecode(s3Event.Object.Key);
+                context.Logger.LogLine($"{decodedKey}");
+                Stream stream =  await S3Client.GetObjectStreamAsync(s3Event.Bucket.Name, decodedKey, null);
                 // FileParser.ExractAllLinesFromS3(stream, s3Event.Object.Key);
                 context.Logger.LogLine($"Stream Length: {stream.Length} bytes");
                 return "Success!";
