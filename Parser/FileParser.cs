@@ -11,7 +11,7 @@ namespace L
     {
         private static Dictionary<string, IFileParser> parsers = new Dictionary<string, IFileParser>()
         {
-            { ".txt", null },
+            { ".txt", new ParseTxt() },
             { ".doc", new ParseDoc() },
             { ".docx", new ParseDocx() },
             { ".pdf", new ParsePdf() },
@@ -26,14 +26,12 @@ namespace L
         public static string[] ExtractAllLines(string path)
         {
             if(!File.Exists(path))
-               throw new FileNotFoundException();
+               throw new FileNotFoundException("The file was not found!");
 
             if(!parsers.ContainsKey(Path.GetExtension(path)))
-               throw new FileFormatException();
+               throw new FileFormatException($"File type \"{Path.GetExtension(path)}\" is not supported!");
 
             IFileParser parser = parsers[Path.GetExtension(path)];
-            if(parser == null)
-                return File.ReadAllLines(path);
             return parser.ExtractAllLines(path);
         }
 
@@ -46,13 +44,10 @@ namespace L
         public static string[] ExtractAllLinesFromS3(Stream stream, string key)
         {
             if(!parsers.ContainsKey(Path.GetExtension(key)))
-               throw new FileFormatException();
+                throw new FileFormatException($"File type \"{Path.GetExtension(path)}\" is not supported!");
 
             IFileParser parser = parsers[Path.GetExtension(key)];
-            if(parser == null)
-                throw new FileFormatException();
-                // return File.ReadAllLines(key);
-            return parser.ExtractAllLines(key);
+            return parser.ExtractAllLines(stream);
         }
     }
 }
