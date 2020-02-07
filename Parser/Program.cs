@@ -1,13 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Collections.Generic;
-using Amazon.S3;
-using Amazon.S3.Model;
-using Amazon;
-using System.Threading;
-using System.Threading.Tasks;
-using Amazon.Runtime.CredentialManagement;
-using Amazon.Runtime;
 
 namespace L
 {

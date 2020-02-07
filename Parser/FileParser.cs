@@ -44,7 +44,7 @@ namespace L
         public static string[] ExtractAllLinesFromS3(Stream stream, string key)
         {
             if(!parsers.ContainsKey(Path.GetExtension(key)))
-                throw new FileFormatException($"File type \"{Path.GetExtension(path)}\" is not supported!");
+                throw new FileFormatException($"File type \"{Path.GetExtension(key)}\" is not supported!");
 
             IFileParser parser = parsers[Path.GetExtension(key)];
             return parser.ExtractAllLines(stream);
