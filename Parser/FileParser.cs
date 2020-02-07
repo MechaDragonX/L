@@ -3,8 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-using Amazon.S3;
-
 namespace L
 {
     public static class FileParser
