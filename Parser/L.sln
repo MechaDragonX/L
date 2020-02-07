@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "L", "L.csproj", "{F777D37F-F2F3-4FDA-B642-0BDCC1CBE073}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResumeParser", "..\LambdaFunction\ResumeParser.csproj", "{3A72D20F-F71D-48F0-889E-4E74846E7ED1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "L.Lambda", "..\LambdaFunction\L.Lambda.csproj", "{3A72D20F-F71D-48F0-889E-4E74846E7ED1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
