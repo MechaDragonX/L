@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.Web;
 
 using Amazon;
+using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.DocumentModel;
+using Amazon.DynamoDBv2.Model;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.S3Events;
 using Amazon.S3;
@@ -20,6 +23,8 @@ namespace L.Lambda
 {
     public class Parser
     {
+        private static AmazonDynamoDBClient DDBClient = new AmazonDynamoDBClient();
+
         IAmazonS3 S3Client { get; set; }
 
         /// <summary>
@@ -59,15 +64,17 @@ namespace L.Lambda
             try
             {
                 string decodedKey = HttpUtility.UrlDecode(s3Event.Object.Key);
-                context.Logger.LogLine($"{decodedKey}");
-                Stream stream =  await S3Client.GetObjectStreamAsync(s3Event.Bucket.Name, decodedKey, null);
-                context.Logger.LogLine($"Stream Length: {stream.Length} bytes");
-                context.Logger.LogLine($"{ParseDataFromS3(stream, decodedKey)}");
+                context.Logger.LogLine($"Reading \"{decodedKey}\"...");
+                Stream stream = await S3Client.GetObjectStreamAsync(s3Event.Bucket.Name, decodedKey, null);
+                string applicantJSON = ParseDataFromS3(stream, decodedKey);
+                context.Logger.LogLine($"\"{decodedKey}\" read\n{applicantJSON}");
+                context.Logger.LogLine($"Putting data in DynamoDb Table...");
+                await PutDataInDynamoDB(applicantJSON);
+                context.Logger.LogLine($"Data put successfully! Check the DynamoDB table for more details.");
                 return "Success!";
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                context.Logger.LogLine($"Error getting object {s3Event.Object.Key} from bucket {s3Event.Bucket.Name}. Make sure they exist and your bucket is in the same region as this function.");
                 context.Logger.LogLine(e.Message);
                 context.Logger.LogLine(e.StackTrace);
                 throw;
@@ -80,6 +87,12 @@ namespace L.Lambda
             Applicant applicant = resumeParser.Parse();
             applicant.GenerateID();
             return applicant.ToString();
+        }
+        private static async Task PutDataInDynamoDB(string applicantJSON)
+        {
+            Document item = Document.FromJson(applicantJSON);
+            Table table = Table.LoadTable(DDBClient, "Applicants");
+            await table.PutItemAsync(item);
         }
     }
 }
