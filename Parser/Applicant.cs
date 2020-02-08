@@ -110,6 +110,9 @@ namespace L
             }
         }
 
+        [JsonProperty("id")]
+        private int ID = 0;
+
         // Contact Info
         [JsonProperty("givenName")]
         public string GivenName { get; set; }
@@ -179,6 +182,13 @@ namespace L
             Summary = summary;
         }
 
+        public void GenerateID()
+        {
+            foreach(char letter in Surname)
+                ID += (letter * 3);
+            foreach(char letter in GivenName)
+                ID += (letter * 5);
+        }
         public static Experience GetExperience(string[] input)
         {
             Regex beforeAt = new Regex(@".*(?=(\sat))", RegexOptions.Compiled);
