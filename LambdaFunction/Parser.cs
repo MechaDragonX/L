@@ -78,6 +78,7 @@ namespace L.Lambda
             string[] lines = FileParser.ExtractAllLinesFromS3(stream, key);
             ResumeParser resumeParser = new ResumeParser(lines);
             Applicant applicant = resumeParser.Parse();
+            applicant.GenerateID();
             return applicant.ToString();
         }
     }

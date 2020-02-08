@@ -188,6 +188,7 @@ namespace L
                 ID += (letter * 3);
             foreach(char letter in GivenName)
                 ID += (letter * 5);
+            ID += 1000;
         }
         public static Experience GetExperience(string[] input)
         {
