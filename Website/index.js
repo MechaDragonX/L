@@ -31,6 +31,10 @@ app.post('/', (req, res) => {
     });
 });
 
+app.get('*', (req, res) => {
+    res.render('404');
+})
+
 app.listen(config.port, () => {
     console.log(`listening on port ${config.port}`);
 });
