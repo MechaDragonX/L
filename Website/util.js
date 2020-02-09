@@ -17,8 +17,13 @@ const uploadFile = (s3, file, cb) => {
     };
     s3.upload(params, cb);
 };
+const auth = (req, res, next) => {
+    if (!req.isAuthenticated()) return res.redirect('/');
+    return next();
+}
 
 module.exports = {
     checkMimeType,
-    uploadFile
+    uploadFile,
+    auth
 };

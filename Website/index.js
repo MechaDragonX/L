@@ -2,39 +2,74 @@ const express = require('express');
 const {S3} = require('aws-sdk');
 const fileUpload = require('express-fileupload');
 const exphbs = require('express-handlebars');
+const session = require('express-session');
 const app = express();
 const {lookup} = require('mime-types');
-const {checkMimeType, uploadFile} = require('./util');
+let passport = require('passport')
+let OpenIDStrategy = require('passport-openid').Strategy;
+let GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const {checkMimeType, uploadFile, auth} = require('./util');
 const config = require('./config.json');
 const s3 = new S3({
     accessKeyId: config.accessKey,
     secretAccessKey: config.secretAccessKey
 });
 
-app.use(express.static('views'));
+app.use(session({ 
+    secret: 'dfog8nyro893mof23yijertnio',
+    resave: false,
+    saveUninitialized: true
+}));
+app.use(passport.initialize());
+        app.use(passport.session());
 app.use(express.static('styles'));
 app.use(fileUpload());
 app.engine('hbs', exphbs({ extname:'hbs' }));
 app.set('view engine', 'hbs');
 
-app.get('/', (req, res) => {
-    return res.render('index', { title: 'Resume Upload Tool' });
+passport.use(new GoogleStrategy({
+    clientID: config.googleOAuthClientID,
+    clientSecret: config.googleOAuthClientSecret,
+    callbackURL: process.env.NODE_ENV === 'production' ? config.production.googleOAuthCallbackURL : config.debug.googleOAuthCallbackURL
+  },
+    function(accessToken, refreshToken, profile, done) {
+        return done(null, profile);
+    }
+));
+passport.serializeUser(function(user, done) {
+    done(null, user);
+});
+passport.deserializeUser(function(user, done) {
+    done(null, user);
 });
 
-app.post('/', (req, res) => {
+app.get('/auth/google', passport.authenticate('google', {
+    scope: ['profile'],
+    failureRedirect: '/'
+}));
+
+app.get('/auth/google/callback', passport.authenticate('google'), (req, res) => {
+    res.redirect('/upload');
+});
+app.get('/(|login)', (req, res) => {
+    if(!req.isAuthenticated())
+        return res.render('index', { title: 'Login' });45
+});
+app.get('/upload', auth, (req, res) => {
+    return res.render('upload', { title: 'Resume Upload Tool', user: req.user ? req.user : null });
+});
+app.post('/upload', (req, res) => {
     if(!checkMimeType(lookup(req.files.resume.name)))
-        return res.render('index', { title: 'Resume Upload Tool', error: true, message: 'Unsupported File Type!' });
+        return res.render('upload', { title: 'Resume Upload Tool', error: true, message: 'Unsupported File Type!' });
     uploadFile(s3, req.files.resume, (err, data) => {
         if(err)
-            return res.render('index', { title: 'Resume Upload Tool', error: true, message: 'Something went Wrong!' });
-        return res.render('index', { title: 'Resume Upload Tool', success: true, data });
+            return res.render('upload', { title: 'Resume Upload Tool', error: true, message: 'Something went Wrong!' });
+        return res.render('upload', { title: 'Resume Upload Tool', success: true, data });
     });
 });
-
 app.get('*', (req, res) => {
     res.render('404');
 })
-
 app.listen(config.port, () => {
-    console.log(`listening on port ${config.port}`);
+    console.log(`Running on ${process.env.NODE_ENV === 'production' ? 'production' : 'debug'}, listening on port ${config.port}`);
 });

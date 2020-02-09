@@ -1,28 +1,20 @@
-{{#if error}}
+{{!-- OpenID Authentication --}}
+{{!-- <form action="/auth/openid" method="post">
     <div>
-        <h1>{{message}}</h1>
+        <label>OpenID:</label>
+        <input type="text" name="openid_identifier"/><br/>
     </div>
-{{/if}}
-{{#if success}}
     <div>
-        <h1>File uploaded to S3 successfully!</h1>
-        <p>
-            You can view it <a href={{data.Location}}>here</a>!
-        </p>
+        <input type="submit" value="Sign In"/>
     </div>
-{{/if}}
+</form> --}}
+
+
 <div>
-    <h1>Welcome to the resume upload tool!</h1>
-    <p>Please upload your resume here: </p>
-    <form method='post' enctype="multipart/form-data">
-        <input type='file'
-        accept=
-        'text/plain,
-        application/msword,
-        application/vnd.openxmlformats-officedocument.wordprocessingml.document,
-        application/pdf,
-        application/vnd.oasis.opendocument.text'
-        name='resume' />
-        <input type='submit' value='Upload to S3'/>
-    </form>
+    <p>Welcome to Resume Upload Tool.</p>
+    <p>In order to be able to submit your resume, you must first login to the website :)</p>
+</div>
+{{!-- Google OAuth Authentication --}}
+<div>
+    <a href="/auth/google">Sign In with Google</a>
 </div>
