@@ -1,19 +1,21 @@
 const express = require('express');
-const {S3} = require('aws-sdk');
+const { S3, DynamoDB } = require('aws-sdk');
 const fileUpload = require('express-fileupload');
 const exphbs = require('express-handlebars');
 const session = require('express-session');
 const app = express();
-const {lookup} = require('mime-types');
-let passport = require('passport')
-let OpenIDStrategy = require('passport-openid').Strategy;
-let GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-const {checkMimeType, uploadFile, auth} = require('./util');
+const { lookup } = require('mime-types');
+const passport = require('passport')
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+
+const {checkMimeType, uploadFile, auth, getDynamoDBData} = require('./util');
 const config = require('./config.json');
+
 const s3 = new S3({
     accessKeyId: config.accessKey,
     secretAccessKey: config.secretAccessKey
 });
+
 
 app.use(session({ 
     secret: 'dfog8nyro893mof23yijertnio',
@@ -67,8 +69,13 @@ app.post('/upload', (req, res) => {
         return res.render('upload', { title: 'Resume Upload Tool', success: true, data });
     });
 });
+app.get('/data', async (req, res) => {
+    let data = await getDynamoDBData();
+    console.log(data);
+    return res.render('data', { title: 'Data', data });
+});
 app.get('*', (req, res) => {
-    res.render('404');
+    return res.render('404');
 })
 app.listen(config.port, () => {
     console.log(`Running on ${process.env.NODE_ENV === 'production' ? 'production' : 'debug'}, listening on port ${config.port}`);

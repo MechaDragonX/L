@@ -21,7 +21,7 @@ namespace L
             public DateTime EndDate { get; set; }
             [JsonProperty("responsibilities")]
             public string[] Responsibilities { get; set; }
-            [JsonProperty("paid?")]
+            [JsonProperty("paid")]
             public bool Paid { get; set; }
 
             public Experience() { }

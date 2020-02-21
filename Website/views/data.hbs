@@ -1,0 +1,99 @@
+<div>
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Phone Number</th>
+      <th>Address</th>
+      <th>Summary</th>
+      <th>High School</th>
+      <th>College - Undergraduate</th>
+      <th>College - Postgraduate</th>
+      <th>Educational Experience</th>
+      <th>Work Experience</th>
+      <th>Volunteer Experience</th>
+      <th>Technical Skills</th>
+      <th>Unsorted Skills</th>
+    </tr>
+    {{#each data.Items as |item|}}
+      <tr>
+      <td>{{item.id}}</td>
+      <td>{{item.surname}}, {{item.givenName}}</td>
+      <td>{{item.phoneNumer}}</td>
+      <td>{{item.address}}</td>
+      <td>{{item.summary}}</td>
+      <td>{{item.highSchool}}</td>
+      <td>{{item.collegeUG}}</td>
+      <td>{{item.collegePG}}</td>
+      <td>
+        <ul>
+          {{#each item.educationalExperience}}
+            <li>{{this}}</li>
+          {{/each}}
+        </ul>
+      </td>
+      <td>
+        {{#each item.workExperience}}
+          <div>
+            <ul>
+              <li>{{this.title}}</li>
+              <li>{{this.location}}</li>
+              <li>{{this.startDate}}</li>
+              <li>{{this.endDate}}</li>
+              <div>
+                {{#each this.responsibilities as |resp|}}
+                <li>{{this}}</li>
+                {{/each}}
+              </div>
+              {{#if this.paid}}
+                <li>Paid Position</li>
+              {{/if}}
+              {{#unless this.paid}}
+                <li>Not Paid</li>
+              {{/unless}}
+            </ul>
+          </div>
+        {{/each}}
+      </td>
+      <td>
+        {{#each item.volunteerExperience}}
+          <div>
+            <ul>
+              <li>{{this.title}}</li>
+              <li>{{this.location}}</li>
+              <li>{{this.startDate}}</li>
+              <li>{{this.endDate}}</li>
+              <div>
+                {{#each this.responsibilities as |resp|}}
+                <li>{{this}}</li>
+                {{/each}}
+              </div>
+              {{#if this.paid}}
+                <li>Paid Position</li>
+              {{/if}}
+              {{#unless this.paid}}
+                <li>Not Paid</li>
+              {{/unless}}
+            </ul>
+          </div>
+        {{/each}}
+      </td>
+      <td>
+        <ul>
+          {{#each item.technicalSkills}}
+            <li>{{this}}</li>
+          {{/each}}
+        </ul>
+      </td>
+      <td>
+        <ul>
+          {{#each item.unsortedSkills}}
+            <li>{{this}}</li>
+          {{/each}}
+        </ul>
+      </td>
+    </tr>
+    {{/each}}
+  </table>
+</div>

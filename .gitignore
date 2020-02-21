@@ -347,9 +347,10 @@ out/
 *.code-workspace
 
 # Node Files
-node_modules/
-config.json
-package-lock.json
+Website/node_modules/
+Website/config.json
+Website/package-lock.json
 
 # AWS Credential Information and Lambda Function Metadata
 LambdaFunction/aws-lambda-tools-defaults.json
+Website/aws-config.json

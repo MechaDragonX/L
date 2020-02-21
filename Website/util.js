@@ -1,3 +1,7 @@
+const auth = (req, res, next) => {
+    if (!req.isAuthenticated()) return res.redirect('/');
+    return next();
+};
 const checkMimeType = (mimeType) => {
     const mimeTypes = [
         'text/plain',
@@ -17,13 +21,30 @@ const uploadFile = (s3, file, cb) => {
     };
     s3.upload(params, cb);
 };
-const auth = (req, res, next) => {
-    if (!req.isAuthenticated()) return res.redirect('/');
-    return next();
-}
+// const getItem  = require('util').promisify()
+const getDynamoDBData = async () => {
+    const AWS = require('aws-sdk');
+    const config = require('./config.json');
+    AWS.config.loadFromPath('./aws-config.json');
+
+    let docClient = new AWS.DynamoDB.DocumentClient();
+    const params = { TableName: config.dynamoDBTable };
+    const scan = (p) => {
+        return new Promise((res, rej) => {
+            docClient.scan(p, (err, data) => {
+                if (!err) return res(data);
+                return rej(err)
+            });
+        });
+    };
+    // const a = await get(getParams);
+    const a = await scan(params);
+    return a;
+};
 
 module.exports = {
+    auth,
     checkMimeType,
     uploadFile,
-    auth
+    getDynamoDBData
 };
