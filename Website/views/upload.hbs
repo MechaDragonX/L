@@ -1,20 +1,25 @@
 {{#if error}}
-    <div>
-        <h1>{{message}}</h1>
+    <div class="alert alert-dismissible alert-danger" id="alert">
+        <button type="button" class="close" data-dismiss="alert" id="hide">&times;</button>
+        <h4 class="alert-heading">Oh Snap!</h4>
+        <p class="mb-0">{{message}}</p>
     </div>
 {{/if}}
 {{#if success}}
-    <div>
-        <h1>File uploaded to S3 successfully!</h1>
-        <p>
+    <div class="alert alert-dismissible alert-success" id="alert">
+        <button type="button" class="close" data-dismiss="alert" id="hide">&times;</button>
+        <h4 class="alert-heading">File uploaded to S3 successfully!</h4>
+        <p class="mb-0">
             You can view it <a href={{data.Location}}>here</a>!
         </p>
     </div>
 {{/if}}
-<div>
-    <h1>Welcome {{user.displayName}} to the resume upload tool!</h1>
-    <p>Please upload your resume here: </p>
+
+<div class="jumbotron">
+    <h1 class="display-5">Welcome {{user.displayName}} to the resume upload tool!</h1>
+    <p class="lead">Please upload your resume below.</p>
     <form method='post' enctype="multipart/form-data">
+    <div display="inline" class="form-group">
         <input type='file'
         accept=
         'text/plain,
@@ -22,7 +27,14 @@
         application/vnd.openxmlformats-officedocument.wordprocessingml.document,
         application/pdf,
         application/vnd.oasis.opendocument.text'
-        name='resume' />
-        <input type='submit' value='Upload to S3'/>
-    </form>
+        class="form-control-file" name="resume" id="resume">
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
+
 </div>
+<script>
+    $("#hide").click(function() {
+        $("#alert").hide();
+    });
+</script>
