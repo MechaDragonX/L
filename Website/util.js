@@ -21,8 +21,7 @@ const uploadFile = (s3, file, cb) => {
     };
     s3.upload(params, cb);
 };
-// const getItem  = require('util').promisify()
-const getDynamoDBData = async () => {
+const scanDynamoDB = async () => {
     const AWS = require('aws-sdk');
     const config = require('./config.json');
     AWS.config.loadFromPath('./aws-config.json');
@@ -37,14 +36,38 @@ const getDynamoDBData = async () => {
             });
         });
     };
-    // const a = await get(getParams);
-    const a = await scan(params);
-    return a;
+    const result = await scan(params);
+    return result;
 };
+const getFromDynamoDB = async (id, surname) => {
+    const AWS = require('aws-sdk');
+    const config = require('./config.json');
+    AWS.config.loadFromPath('./aws-config.json');
+
+    let docClient = new AWS.DynamoDB.DocumentClient();
+    const params = {
+        TableName: config.dynamoDBTable,
+        Key: {
+            "id": parseInt(id),
+            "surname": surname
+        } 
+    };
+    const get = (p) => {
+        return new Promise((res, rej) => {
+            docClient.get(p, (err, data) => {
+                if (!err) return res(data);
+                return rej(err)
+            });
+        });
+    };
+    const result = await get(params);
+    return result;
+}
 
 module.exports = {
     auth,
     checkMimeType,
     uploadFile,
-    getDynamoDBData
+    scanDynamoDB,
+    getFromDynamoDB
 };

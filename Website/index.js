@@ -1,5 +1,5 @@
 const express = require('express');
-const { S3, DynamoDB } = require('aws-sdk');
+const { S3 } = require('aws-sdk');
 const fileUpload = require('express-fileupload');
 const exphbs = require('express-handlebars');
 const session = require('express-session');
@@ -8,7 +8,7 @@ const { lookup } = require('mime-types');
 const passport = require('passport')
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
-const {checkMimeType, uploadFile, auth, getDynamoDBData} = require('./util');
+const {checkMimeType, uploadFile, auth, scanDynamoDB, getFromDynamoDB } = require('./util');
 const config = require('./config.json');
 
 const s3 = new S3({
@@ -70,9 +70,22 @@ app.post('/upload', (req, res) => {
     });
 });
 app.get('/data', async (req, res) => {
-    let data = await getDynamoDBData();
-    console.log(data);
-    return res.render('data', { title: 'Data', data });
+    let data = await scanDynamoDB();
+    data = data.Items;
+    // TODO: Sort data by surname
+    // data = data.Items.sort();
+    // console.log(data);
+    return res.render('data', { title: 'Data', data, detailed: false });
+});
+app.get('/data/:id_surname', async (req, res) => {
+    let params = req.params.id_surname.split('-');
+    let detail = await getFromDynamoDB(params[0], params[1]);
+    detail = detail.Item;
+
+    let data = await scanDynamoDB();
+    data = data.Items;
+
+    return res.render('data', { title: 'Data', data: data, detail: detail, detailed: true });
 });
 app.get('*', (req, res) => {
     return res.render('404');

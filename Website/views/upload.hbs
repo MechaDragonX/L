@@ -19,19 +19,18 @@
     <h1 class="display-5">Welcome {{user.displayName}} to the resume upload tool!</h1>
     <p class="lead">Please upload your resume below.</p>
     <form method='post' enctype="multipart/form-data">
-    <div display="inline" class="form-group">
-        <input type='file'
-        accept=
-        'text/plain,
-        application/msword,
-        application/vnd.openxmlformats-officedocument.wordprocessingml.document,
-        application/pdf,
-        application/vnd.oasis.opendocument.text'
-        class="form-control-file" name="resume" id="resume">
-    </div>
-    <button type="submit" class="btn btn-primary">Upload</button>
-</form>
-
+        <div display="inline" class="form-group">
+            <input type='file'
+            accept=
+            'text/plain,
+            application/msword,
+            application/vnd.openxmlformats-officedocument.wordprocessingml.document,
+            application/pdf,
+            application/vnd.oasis.opendocument.text'
+            class="form-control-file" name="resume" id="resume">
+        </div>
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
 </div>
 <script>
     $("#hide").click(function() {

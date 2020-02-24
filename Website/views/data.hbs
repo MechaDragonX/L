@@ -1,4 +1,64 @@
-<div>
+{{#if detailed}}
+  <div class="card mb-3" style="float: left; margin: 10px" id="details">
+    <button type="button" class="close" data-dismiss="alert" id="hide">&times;</button>
+    <h3 class="card-header">{{detail.surname}}, {{detail.givenName}}</h3>
+    <div class="card-body">
+        <h6 class="card-subtitle text-muted">{{detail.id}}</h6>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">{{detail.summary}}</h5>
+    </div>
+    <div class="card-body">
+        <p class="card-text">{{detail.email}}</p>
+        <p class="card-text">{{detail.phoneNumber}}</p>
+        <p class="card-text">{{detail.address}}</p>
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item list-group-item-action active">Work Experience</li>
+        {{#each detail.workExperience as |xp|}}
+            <li class="list-group-item list-group-item-action">{{xp.title}}, {{xp.location}}</li>
+        {{/each}}
+    </ul>
+    <div class="card-body">
+        <a href="#" class="card-link">placeholder</a>
+    </div>
+    <div class="card-footer text-muted">
+        placeholder
+    </div>
+  </div>
+{{/if}}
+
+<table class="table table-hover">
+  <thead>
+    <tr class="table-primary">
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Phone Number</th>
+      <th scope="col">Address</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each data as |applicant|}}
+      <tr class="table-secondary">
+        <th scope="row">
+          <a href="/data/{{applicant.id}}-{{applicant.surname}}">
+            {{applicant.surname}}, {{applicant.givenName}}
+          </a>
+        </th>
+        <td>{{applicant.email}}</td>
+        <td>{{applicant.phoneNumber}}</td>
+        <td>{{applicant.address}}</td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
+<script>
+    $("#hide").click(function() {
+        $("#details").hide();
+    });
+</script>
+
+{{!-- <div>
   <table>
     <tr>
       <th>ID</th>
@@ -16,25 +76,25 @@
       <th>Technical Skills</th>
       <th>Unsorted Skills</th>
     </tr>
-    {{#each data.Items as |item|}}
+    {{#each data.Items as |applicant|}}
       <tr>
-      <td>{{item.id}}</td>
-      <td>{{item.surname}}, {{item.givenName}}</td>
-      <td>{{item.phoneNumer}}</td>
-      <td>{{item.address}}</td>
-      <td>{{item.summary}}</td>
-      <td>{{item.highSchool}}</td>
-      <td>{{item.collegeUG}}</td>
-      <td>{{item.collegePG}}</td>
+      <td>{{applicant.id}}</td>
+      <td>{{applicant.surname}}, {{applicant.givenName}}</td>
+      <td>{{applicant.phoneNumer}}</td>
+      <td>{{applicant.address}}</td>
+      <td>{{applicant.summary}}</td>
+      <td>{{applicant.highSchool}}</td>
+      <td>{{applicant.collegeUG}}</td>
+      <td>{{applicant.collegePG}}</td>
       <td>
         <ul>
-          {{#each item.educationalExperience}}
+          {{#each applicant.educationalExperience}}
             <li>{{this}}</li>
           {{/each}}
         </ul>
       </td>
       <td>
-        {{#each item.workExperience}}
+        {{#each applicant.workExperience}}
           <div>
             <ul>
               <li>{{this.title}}</li>
@@ -57,7 +117,7 @@
         {{/each}}
       </td>
       <td>
-        {{#each item.volunteerExperience}}
+        {{#each applicant.volunteerExperience}}
           <div>
             <ul>
               <li>{{this.title}}</li>
@@ -81,14 +141,14 @@
       </td>
       <td>
         <ul>
-          {{#each item.technicalSkills}}
+          {{#each applicant.technicalSkills}}
             <li>{{this}}</li>
           {{/each}}
         </ul>
       </td>
       <td>
         <ul>
-          {{#each item.unsortedSkills}}
+          {{#each applicant.unsortedSkills}}
             <li>{{this}}</li>
           {{/each}}
         </ul>
@@ -96,4 +156,4 @@
     </tr>
     {{/each}}
   </table>
-</div>
+</div> --}}
