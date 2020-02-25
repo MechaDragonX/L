@@ -1,33 +1,22 @@
 <style>
     body {
-    flex-direction: column;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+        flex-direction: column;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
     }
-    div.error {
-        font-size: 30;
-        text-align: center;
-        border: none;
-        color: #00eeff;
-    }
-    div.message {
-        text-align: center;
+    p {
+        font-size: 16;
     }
 </style>
-{{!-- <div class='error'>404</div>
-<div class='message'>
-    <p id='message'>
-        o_0<br>
-        Resource not found!
-    </p>
-</div> --}}
 
-<div class="card text-white bg-danger mb-3" style="">
-  <div class="card-header">404</div>
+<div class="card text-white bg-danger mb-3" style="max-width: 60rem;">
+  <div class="card-header" style="text-align: center;">
+      <h3>404</h3>
+  </div>
   <div class="card-body">
-    <p class="message card-text" id="message">
+    <p class="card-text" id="message" style="text-align: center;">
         o_0<br>
         Resource not found!
     </p>
