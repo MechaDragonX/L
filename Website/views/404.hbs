@@ -16,13 +16,24 @@
         text-align: center;
     }
 </style>
-<div class='error'>404</div>
+{{!-- <div class='error'>404</div>
 <div class='message'>
     <p id='message'>
         o_0<br>
         Resource not found!
     </p>
+</div> --}}
+
+<div class="card text-white bg-danger mb-3" style="">
+  <div class="card-header">404</div>
+  <div class="card-body">
+    <p class="message card-text" id="message">
+        o_0<br>
+        Resource not found!
+    </p>
+  </div>
 </div>
+
 <script>
     let random = Math.floor((Math.random() * 5));
     let obj;

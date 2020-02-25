@@ -88,7 +88,7 @@ app.get('/data/:id_surname', async (req, res) => {
     return res.render('data', { title: 'Data', data: data, detail: detail, detailed: true });
 });
 app.get('*', (req, res) => {
-    return res.render('404');
+    return res.render('404', { layout: 'error.hbs', title: '404: Resource not Found' });
 })
 app.listen(config.port, () => {
     console.log(`Running on ${process.env.NODE_ENV === 'production' ? 'production' : 'debug'}, listening on port ${config.port}`);
