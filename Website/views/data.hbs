@@ -1,159 +1,132 @@
 {{#if detailed}}
-  <div class="card mb-3" style="float: left; margin: 10px" id="details">
-    <button type="button" class="close" data-dismiss="alert" id="hide">&times;</button>
-    <h3 class="card-header">{{detail.surname}}, {{detail.givenName}}</h3>
-    <div class="card-body">
-        <h6 class="card-subtitle text-muted">{{detail.id}}</h6>
+    <div class="card mb-3" style="float: left; margin: 10px" id="details">
+        <button type="button" class="close" data-dismiss="alert" id="hide">&times;</button>
+        <h3 class="card-header">{{detail.surname}}, {{detail.givenName}}</h3>
+        <div class="card-body">
+            <h6 class="card-subtitle text-muted">{{detail.id}}</h6>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{detail.summary}}</h5>
+        </div>
+        <div class="card-body">
+            <p class="card-text">{{detail.email}}</p>
+            <p class="card-text">{{detail.phoneNumber}}</p>
+            <p class="card-text">{{detail.address}}</p>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item list-group-item-action active">Education</li>
+            {{#if detail.highSchool}}
+                <li class="list-group-item list-group-item-action">{{detail.highSchool}}</p>
+            {{/if}}
+            {{#if detail.collegeUG}}
+                <li class="list-group-item list-group-item-action">{{detail.collegeUG}}</p>
+            {{/if}}
+            {{#if detail.collegePG}}
+                <li class="list-group-item list-group-item-action">{{detail.collegePG}}</p>
+            {{/if}}
+        </ul>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item list-group-item-action active">Work Experience</li>
+            {{#each detail.workExperience as |xp|}}
+                <li class="list-group-item list-group-item-action">{{xp.title}}, {{xp.location}}</li>
+            {{/each}}
+        </ul>
+        <div class="card-body">
+            <a href="/detail/{{detail.id}}-{{detail.surname}}" class="card-link">
+                Complete Details
+            </a>
+        </div>
+        <div class="card-footer text-muted">
+            placeholder
+        </div>
     </div>
-    <div class="card-body">
-        <h5 class="card-title">{{detail.summary}}</h5>
-    </div>
-    <div class="card-body">
-        <p class="card-text">{{detail.email}}</p>
-        <p class="card-text">{{detail.phoneNumber}}</p>
-        <p class="card-text">{{detail.address}}</p>
-    </div>
-    <ul class="list-group list-group-flush">
-        <li class="list-group-item list-group-item-action active">Work Experience</li>
-        {{#each detail.workExperience as |xp|}}
-            <li class="list-group-item list-group-item-action">{{xp.title}}, {{xp.location}}</li>
-        {{/each}}
-    </ul>
-    <div class="card-body">
-        <a href="#" class="card-link">placeholder</a>
-    </div>
-    <div class="card-footer text-muted">
-        placeholder
-    </div>
-  </div>
 {{/if}}
 
 <table class="table table-hover">
-  <thead>
-    <tr class="table-success">
-      <th scope="col">Name</th>
-      <th scope="col">Email</th>
-      <th scope="col">Phone Number</th>
-      <th scope="col">Address</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each data as |applicant|}}
-      <tr class="table-secondary">
-        <th scope="row">
-          <a href="/data/{{applicant.id}}-{{applicant.surname}}">
-            {{applicant.surname}}, {{applicant.givenName}}
-          </a>
-        </th>
-        <td>{{applicant.email}}</td>
-        <td>{{applicant.phoneNumber}}</td>
-        <td>{{applicant.address}}</td>
-      </tr>
-    {{/each}}
-  </tbody>
+    <thead>
+        <tr class="table-success">
+            <th scope="col">Surname</th>
+            <th scope="col">Given Name</th>
+            <th scope="col">
+                <a href="/data/email" style="color: darkviolet;">Email</a>
+            </th>
+            <th scope="col">Phone Number</th>
+            <th scope="col">Address</th>
+            <th scope="col">High School</th>
+            <th scope="col">College (Undergraduate)</th>
+            <th scope="col">College (Postgraduate)</th>
+            <th scope="col">Latest/Current Job Position - Title</th>
+            <th scope="col">Latest/Current Job Position - Location</th>
+        </tr>
+        <tr>
+            <th scope="col">
+                <input class="form-control mr-sm-2" type="text" placeholder="Filter" id="surnameFilter">
+            </th>
+            <th scope="col">
+                <input class="form-control mr-sm-2" type="text" placeholder="Filter" id="givenFilter">
+            </th>
+            <th scope="col" id="filter">
+                <input class="form-control mr-sm-2" type="text" placeholder="Filter">
+            </th>
+            <th scope="col" id="filter">
+                <input class="form-control mr-sm-2" type="text" placeholder="Filter">
+            </th>
+            <th scope="col" id="filter">
+                <input class="form-control mr-sm-2" type="text" placeholder="Filter">
+            </th>
+            <th scope="col" id="filter">
+                <input class="form-control mr-sm-2" type="text" placeholder="Filter">
+            </th>
+            <th scope="col" id="filter">
+                <input class="form-control mr-sm-2" type="text" placeholder="Filter">
+            </th>
+            <th scope="col" id="filter">
+                <input class="form-control mr-sm-2" type="text" placeholder="Filter">
+            </th>
+            <th scope="col" id="filter">
+                <input class="form-control mr-sm-2" type="text" placeholder="Filter">
+            </th>
+            <th scope="col" id="filter">
+                <input class="form-control mr-sm-2" type="text" placeholder="Filter">
+            </th>
+        </tr>
+    </thead>
+    <tbody id="aplicantTable">
+        {{#each data as |applicant|}}
+            <tr class="table-secondary">
+                <td class="surname">
+                    <a href="/data/{{applicant.id}}-{{applicant.surname}}">
+                        {{applicant.surname}}
+                    </a>
+                </td>
+                <td class="given">{{applicant.givenName}}</td>
+                <td class="email">{{applicant.email}}</td>
+                <td class="phone">{{applicant.phoneNumber}}</td>
+                <td class="address">{{applicant.address}}</td>
+                <td class="high">{{applicant.highSchool}}</td>
+                <td class="collegeUG">{{applicant.collegeUG}}</td>
+                <td class="collegePG">{{applicant.collegePG}}</td>
+                <td class="workTitle">{{applicant.workExperience.0.title}}</td>
+                <td class="workLocation">{{applicant.workExperience.0.location}}</td>
+            </tr>
+        {{/each}}
+    </tbody>
 </table>
-<script>
-    $("#hide").click(function() {
-        $("#details").hide();
+<script type="application/javascript">
+    $('#hide').click(function () {
+        $('#details').hide();
+    });
+    $('#surnameFilter').keyup(function() { 
+        $('#applicantTable td.surname.a:contains('' + $(this).val() + '')").parent().show();
+        $('#applicantTable td.surname.a:not(:contains(''' + $(this).val() + '''))").parent().hide();
+    });
+
+    $(document).ready(function(){
+        $("#givenFilter").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#table tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
     });
 </script>
-
-{{!-- <div>
-  <table>
-    <tr>
-      <th>ID</th>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Phone Number</th>
-      <th>Address</th>
-      <th>Summary</th>
-      <th>High School</th>
-      <th>College - Undergraduate</th>
-      <th>College - Postgraduate</th>
-      <th>Educational Experience</th>
-      <th>Work Experience</th>
-      <th>Volunteer Experience</th>
-      <th>Technical Skills</th>
-      <th>Unsorted Skills</th>
-    </tr>
-    {{#each data.Items as |applicant|}}
-      <tr>
-      <td>{{applicant.id}}</td>
-      <td>{{applicant.surname}}, {{applicant.givenName}}</td>
-      <td>{{applicant.phoneNumer}}</td>
-      <td>{{applicant.address}}</td>
-      <td>{{applicant.summary}}</td>
-      <td>{{applicant.highSchool}}</td>
-      <td>{{applicant.collegeUG}}</td>
-      <td>{{applicant.collegePG}}</td>
-      <td>
-        <ul>
-          {{#each applicant.educationalExperience}}
-            <li>{{this}}</li>
-          {{/each}}
-        </ul>
-      </td>
-      <td>
-        {{#each applicant.workExperience}}
-          <div>
-            <ul>
-              <li>{{this.title}}</li>
-              <li>{{this.location}}</li>
-              <li>{{this.startDate}}</li>
-              <li>{{this.endDate}}</li>
-              <div>
-                {{#each this.responsibilities as |resp|}}
-                <li>{{this}}</li>
-                {{/each}}
-              </div>
-              {{#if this.paid}}
-                <li>Paid Position</li>
-              {{/if}}
-              {{#unless this.paid}}
-                <li>Not Paid</li>
-              {{/unless}}
-            </ul>
-          </div>
-        {{/each}}
-      </td>
-      <td>
-        {{#each applicant.volunteerExperience}}
-          <div>
-            <ul>
-              <li>{{this.title}}</li>
-              <li>{{this.location}}</li>
-              <li>{{this.startDate}}</li>
-              <li>{{this.endDate}}</li>
-              <div>
-                {{#each this.responsibilities as |resp|}}
-                <li>{{this}}</li>
-                {{/each}}
-              </div>
-              {{#if this.paid}}
-                <li>Paid Position</li>
-              {{/if}}
-              {{#unless this.paid}}
-                <li>Not Paid</li>
-              {{/unless}}
-            </ul>
-          </div>
-        {{/each}}
-      </td>
-      <td>
-        <ul>
-          {{#each applicant.technicalSkills}}
-            <li>{{this}}</li>
-          {{/each}}
-        </ul>
-      </td>
-      <td>
-        <ul>
-          {{#each applicant.unsortedSkills}}
-            <li>{{this}}</li>
-          {{/each}}
-        </ul>
-      </td>
-    </tr>
-    {{/each}}
-  </table>
-</div> --}}

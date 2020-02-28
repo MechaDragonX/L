@@ -27,7 +27,10 @@ const scanDynamoDB = async () => {
     AWS.config.loadFromPath('./aws-config.json');
 
     let docClient = new AWS.DynamoDB.DocumentClient();
-    const params = { TableName: config.dynamoDBTable };
+    const params = {
+        TableName: config.dynamoDBTable,
+        ProjectionExpression: 'id, surname, givenName, email, phoneNumber, address, highShool, collegeUG, collegePG, summary, workExperience'
+    };
     const scan = (p) => {
         return new Promise((res, rej) => {
             docClient.scan(p, (err, data) => {
@@ -48,9 +51,9 @@ const getFromDynamoDB = async (id, surname) => {
     const params = {
         TableName: config.dynamoDBTable,
         Key: {
-            "id": parseInt(id),
+            "id": id,
             "surname": surname
-        } 
+        }
     };
     const get = (p) => {
         return new Promise((res, rej) => {
@@ -62,12 +65,18 @@ const getFromDynamoDB = async (id, surname) => {
     };
     const result = await get(params);
     return result;
-}
+};
+const checkParams = (params) => {
+    if(params.includes('-'))
+        return true; // detail
+    return false; // prop
+};
 
 module.exports = {
     auth,
     checkMimeType,
     uploadFile,
     scanDynamoDB,
-    getFromDynamoDB
+    getFromDynamoDB,
+    checkParams
 };

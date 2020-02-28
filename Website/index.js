@@ -8,14 +8,14 @@ const { lookup } = require('mime-types');
 const passport = require('passport')
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
-const {checkMimeType, uploadFile, auth, scanDynamoDB, getFromDynamoDB } = require('./util');
+const { checkMimeType, uploadFile, auth, scanDynamoDB, getFromDynamoDB, checkParams } = require('./util');
+const { mergeSort, merge, sort, sortId, sortSurname, sortGivenName, sortEmail } = require('./sortinghelper');
 const config = require('./config.json');
 
 const s3 = new S3({
     accessKeyId: config.accessKey,
     secretAccessKey: config.secretAccessKey
 });
-
 
 app.use(session({ 
     secret: 'dfog8nyro893mof23yijertnio',
@@ -26,7 +26,10 @@ app.use(passport.initialize());
         app.use(passport.session());
 app.use(express.static('styles'));
 app.use(fileUpload());
-app.engine('hbs', exphbs({ extname:'hbs' }));
+app.engine('hbs', exphbs({ 
+    extname:'hbs',
+    helpers: require('./handlebars-helpers')
+}));
 app.set('view engine', 'hbs');
 
 passport.use(new GoogleStrategy({
@@ -72,20 +75,34 @@ app.post('/upload', (req, res) => {
 app.get('/data', async (req, res) => {
     let data = await scanDynamoDB();
     data = data.Items;
+    console.log(data);
     // TODO: Sort data by surname
     // data = data.Items.sort();
     // console.log(data);
     return res.render('data', { title: 'Data', data, detailed: false });
 });
-app.get('/data/:id_surname', async (req, res) => {
+app.get('/data/:params', async (req, res) => {
+    let unsorted = await scanDynamoDB();
+    unsorted = unsorted.Items;
+
+    if(checkParams(req.params.params)) {
+        let params = req.params.params.split('-');
+        let detail = unsorted.find(x => (parseInt(params[0]) === x.id) && (params[1] === x.surname));
+        console.log(detail);
+        return res.render('data', { title: 'Data', data: unsorted, detail: detail, detailed: true });
+    }
+
+    let sorted = sort(unsorted, req.params.params);
+    return res.render('data', { title: 'Data', data: sorted });
+});
+app.get('/detail/:id_surname', async (req, res) => {
+    console.log('blarg!');
     let params = req.params.id_surname.split('-');
-    let detail = await getFromDynamoDB(params[0], params[1]);
-    detail = detail.Item;
+    let applicant = await getFromDynamoDB(parseInt(params[0]), params[1]);
+    applicant = applicant.Item;
+    let title = 'More details for ' + applicant.surname + ', ' + applicant.givenName;
 
-    let data = await scanDynamoDB();
-    data = data.Items;
-
-    return res.render('data', { title: 'Data', data: data, detail: detail, detailed: true });
+    return res.render('detail', { title: title, applicant: applicant });
 });
 app.get('*', (req, res) => {
     return res.render('404', { layout: 'error.hbs', title: '404: Resource not Found' });

@@ -1,0 +1,96 @@
+<div class="card mb-3" style="float: left; margin: 10px" id="details">
+    <button type="button" class="close" data-dismiss="alert" id="hide">&times;</button>
+    <h3 class="card-header">{{applicant.surname}}, {{applicant.givenName}}</h3>
+    <div class="card-body">
+        <h6 class="card-subtitle text-muted">{{applicant.id}}</h6>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">{{applicant.summary}}</h5>
+    </div>
+    <div class="card-body">
+        <p class="card-text">{{applicant.email}}</p>
+        <p class="card-text">{{applicant.phoneNumber}}</p>
+        <p class="card-text">{{applicant.address}}</p>
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item list-group-item-action active">Work Experience</li>
+        {{#each applicant.workExperience as |xp|}}
+            <li class="list-group-item list-group-item-action">{{xp.title}}, {{xp.location}}</li>
+            <li class="list-group-item list-group-item-action">{{xp.startDate}}, {{xp.endDate}}</li>
+            <li class="list-group-item list-group-item-action">Responsibilities:</li>
+            {{#each xp.responsibilities as |resp|}}
+                <li class="list-group-item list-group-item-action">{{resp}}</li>
+            {{/each}}
+            {{#if xp.paid}}
+                <li class="list-group-item list-group-item-action">Paid: Yes</li>
+            {{/if}}
+            {{#unless xp.paid}}
+                <li class="list-group-item list-group-item-action">Paid: No</li>
+            {{/unless}}
+        {{/each}}
+    </ul>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item list-group-item-action active">Education</li>
+        {{#if applicant.highSchool}}
+            <li class="list-group-item list-group-item-action">{{applicant.highSchool}}</li>
+        {{/if}}
+        {{#unless applicant.highSchool}}
+            <li class="list-group-item list-group-item-action">High Schoool: NA</li>
+        {{/unless}}
+
+        {{#if applicant.collegeUG}}
+            <li class="list-group-item list-group-item-action">{{applicant.collegeUG}}</li>
+        {{/if}}
+        {{#unless applicant.collegeUG}}
+            <li class="list-group-item list-group-item-action">College (Undergraduate): NA</li>
+        {{/unless}}
+
+        {{#if applicant.collegePG}}
+            <li class="list-group-item list-group-item-action">{{applicant.collegePG}}</li>
+        {{/if}}
+        {{#unless applicant.collegePG}}
+            <li class="list-group-item list-group-item-action">College (Postgraduate): NA</li>
+        {{/unless}}
+    </ul>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item list-group-item-action active">Eucational Experience</li>
+        {{#each applicant.educationalExperience as |xp|}}
+            <li class="list-group-item list-group-item-action">{{xp}}</li>
+        {{/each}}
+    </ul>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item list-group-item-action active">Technical Skills</li>
+        {{#each applicant.technicalSkills as |skill|}}
+            <li class="list-group-item list-group-item-action">{{skill}}</li>
+        {{/each}}
+    </ul>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item list-group-item-action active">Unsorted Skills</li>
+        {{#each applicant.unsortedSkills as |skill|}}
+            <li class="list-group-item list-group-item-action">{{skill}}</li>
+        {{/each}}
+    </ul>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item list-group-item-action active">Volunteering Experience</li>
+        {{#each applicant.volunteerExperience as |xp|}}
+            <li class="list-group-item list-group-item-action">{{xp.title}}, {{xp.location}}</li>
+            <li class="list-group-item list-group-item-action">{{xp.startDate}}, {{xp.endDate}}</li>
+            <li class="list-group-item list-group-item-action">Responsibilities:</li>
+            {{#each xp.responsibilities as |resp|}}
+                <li class="list-group-item list-group-item-action">{{resp}}</li>
+            {{/each}}
+            {{#if xp.paid}}
+                <li class="list-group-item list-group-item-action">Paid: Yes</li>
+            {{/if}}
+            {{#unless xp.paid}}
+                <li class="list-group-item list-group-item-action">Paid: No</li>
+            {{/unless}}
+        {{/each}}
+    </ul>
+    <div class="card-body">
+        <a href="#" class="card-link">placeholder</a>
+    </div>
+    <div class="card-footer text-muted">
+        placeholder
+    </div>
+</div>
