@@ -32,7 +32,7 @@
             {{/each}}
         </ul>
         <div class="card-body">
-            <a href="/detail/{{detail.id}}-{{detail.surname}}" class="card-link">
+            <a href="/applicants/details/{{detail.id}}-{{detail.surname}}" class="card-link">
                 Complete Details
             </a>
         </div>
@@ -48,7 +48,7 @@
             <th scope="col">Surname</th>
             <th scope="col">Given Name</th>
             <th scope="col">
-                <a href="/data/email" style="color: darkviolet;">Email</a>
+                <a href="/applicants/email" style="color: darkviolet;">Email</a>
             </th>
             <th scope="col">Phone Number</th>
             <th scope="col">Address</th>
@@ -65,37 +65,37 @@
             <th scope="col">
                 <input class="form-control mr-sm-2" type="text" placeholder="Filter" id="givenFilter">
             </th>
-            <th scope="col" id="filter">
-                <input class="form-control mr-sm-2" type="text" placeholder="Filter">
+            <th scope="col">
+                <input class="form-control mr-sm-2" type="text" placeholder="Filter" id="emailFilter">
+            </th>
+            <th scope="col">
+                <input class="form-control mr-sm-2" type="text" placeholder="Filter" id="phoneFilter">
+            </th>
+            <th scope="col">
+                <input class="form-control mr-sm-2" type="text" placeholder="Filter" id="addressFilter">
+            </th>
+            <th scope="col">
+                <input class="form-control mr-sm-2" type="text" placeholder="Filter" id="highFilter">
+            </th>
+            <th scope="col">
+                <input class="form-control mr-sm-2" type="text" placeholder="Filter" id="collegeUGFilter">
             </th>
             <th scope="col" id="filter">
-                <input class="form-control mr-sm-2" type="text" placeholder="Filter">
+                <input class="form-control mr-sm-2" type="text" placeholder="Filter" id="collegePGFilter">
             </th>
             <th scope="col" id="filter">
-                <input class="form-control mr-sm-2" type="text" placeholder="Filter">
+                <input class="form-control mr-sm-2" type="text" placeholder="Filter" id="workTitleFilter">
             </th>
             <th scope="col" id="filter">
-                <input class="form-control mr-sm-2" type="text" placeholder="Filter">
-            </th>
-            <th scope="col" id="filter">
-                <input class="form-control mr-sm-2" type="text" placeholder="Filter">
-            </th>
-            <th scope="col" id="filter">
-                <input class="form-control mr-sm-2" type="text" placeholder="Filter">
-            </th>
-            <th scope="col" id="filter">
-                <input class="form-control mr-sm-2" type="text" placeholder="Filter">
-            </th>
-            <th scope="col" id="filter">
-                <input class="form-control mr-sm-2" type="text" placeholder="Filter">
+                <input class="form-control mr-sm-2" type="text" placeholder="Filter" id="workLocationFilter">
             </th>
         </tr>
     </thead>
-    <tbody id="aplicantTable">
+    <tbody id="applicantTable">
         {{#each data as |applicant|}}
             <tr class="table-secondary">
                 <td class="surname">
-                    <a href="/data/{{applicant.id}}-{{applicant.surname}}">
+                    <a href="/applicants/{{applicant.id}}-{{applicant.surname}}">
                         {{applicant.surname}}
                     </a>
                 </td>
@@ -113,19 +113,74 @@
     </tbody>
 </table>
 <script type="application/javascript">
-    $('#hide').click(function () {
-        $('#details').hide();
-    });
-    $('#surnameFilter').keyup(function() { 
-        $('#applicantTable td.surname.a:contains('' + $(this).val() + '')").parent().show();
-        $('#applicantTable td.surname.a:not(:contains(''' + $(this).val() + '''))").parent().hide();
-    });
-
-    $(document).ready(function(){
-        $("#givenFilter").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-            $("#table tr").filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    $(document).ready(function() {
+        $('#hide').click(function () {
+            $('#details').hide();
+        });
+        $('#surnameFilter').keyup(function() {
+            let query = $(this).val().toLowerCase();
+            $("#applicantTable tr.table-secondary td.surname").filter(function() {
+                $(this).parent().toggle($(this).text().toLowerCase().indexOf(query) > -1)
+            });
+        });
+        $('#givenFilter').keyup(function() {
+            let query = $(this).val().toLowerCase();
+            $("#applicantTable tr.table-secondary td.given").filter(function() {
+                $(this).parent().toggle($(this).text().toLowerCase().indexOf(query) > -1)
+            });
+        });
+        $('#emailFilter').keyup(function() {
+            let query = $(this).val().toLowerCase();
+            $("#applicantTable tr.table-secondary td.email").filter(function() {
+                $(this).parent().toggle($(this).text().toLowerCase().indexOf(query) > -1)
+            });
+        });
+        $('#phoneFilter').keyup(function() {
+            let query = $(this).val().toLowerCase();
+            $("#applicantTable tr.table-secondary td.phone").filter(function() {
+                $(this).parent().toggle($(this).text().toLowerCase().indexOf(query) > -1)
+            });
+        });
+        $('#addressFilter').keyup(function() {
+            let query = $(this).val().toLowerCase();
+            $("#applicantTable tr.table-secondary td.address").filter(function() {
+                $(this).parent().toggle($(this).text().toLowerCase().indexOf(query) > -1)
+            });
+        });
+        $('#addressFilter').keyup(function() {
+            let query = $(this).val().toLowerCase();
+            $("#applicantTable tr.table-secondary td.address").filter(function() {
+                $(this).parent().toggle($(this).text().toLowerCase().indexOf(query) > -1)
+            });
+        });
+        $('#highFilter').keyup(function() {
+            let query = $(this).val().toLowerCase();
+            $("#applicantTable tr.table-secondary td.high").filter(function() {
+                $(this).parent().toggle($(this).text().toLowerCase().indexOf(query) > -1)
+            });
+        });
+        $('#collegeUGFilter').keyup(function() {
+            let query = $(this).val().toLowerCase();
+            $("#applicantTable tr.table-secondary td.collegeUG").filter(function() {
+                $(this).parent().toggle($(this).text().toLowerCase().indexOf(query) > -1)
+            });
+        });
+        $('#collegePGFilter').keyup(function() {
+            let query = $(this).val().toLowerCase();
+            $("#applicantTable tr.table-secondary td.collegePG").filter(function() {
+                $(this).parent().toggle($(this).text().toLowerCase().indexOf(query) > -1)
+            });
+        });
+        $('#workTitleFilter').keyup(function() {
+            let query = $(this).val().toLowerCase();
+            $("#applicantTable tr.table-secondary td.workTitle").filter(function() {
+                $(this).parent().toggle($(this).text().toLowerCase().indexOf(query) > -1)
+            });
+        });
+        $('#workLocationFilter').keyup(function() {
+            let query = $(this).val().toLowerCase();
+            $("#applicantTable tr.table-secondary td.workLocation").filter(function() {
+                $(this).parent().toggle($(this).text().toLowerCase().indexOf(query) > -1)
             });
         });
     });

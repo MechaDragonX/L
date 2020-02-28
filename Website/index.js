@@ -58,7 +58,7 @@ app.get('/auth/google/callback', passport.authenticate('google'), (req, res) => 
 });
 app.get('/(|login)', (req, res) => {
     if(!req.isAuthenticated())
-        return res.render('index', { title: 'Login' });45
+        return res.render('index', { title: 'Login' });
 });
 app.get('/upload', auth, (req, res) => {
     return res.render('upload', { title: 'Resume Upload Tool', user: req.user ? req.user : null });
@@ -72,16 +72,16 @@ app.post('/upload', (req, res) => {
         return res.render('upload', { title: 'Resume Upload Tool', success: true, data });
     });
 });
-app.get('/data', async (req, res) => {
+app.get('/applicants', auth, async (req, res) => {
     let data = await scanDynamoDB();
     data = data.Items;
     console.log(data);
     // TODO: Sort data by surname
     // data = data.Items.sort();
     // console.log(data);
-    return res.render('data', { title: 'Data', data, detailed: false });
+    return res.render('data', { title: 'Applicant List', data, detailed: false });
 });
-app.get('/data/:params', async (req, res) => {
+app.get('/applicants/:params', async (req, res) => {
     let unsorted = await scanDynamoDB();
     unsorted = unsorted.Items;
 
@@ -89,13 +89,13 @@ app.get('/data/:params', async (req, res) => {
         let params = req.params.params.split('-');
         let detail = unsorted.find(x => (parseInt(params[0]) === x.id) && (params[1] === x.surname));
         console.log(detail);
-        return res.render('data', { title: 'Data', data: unsorted, detail: detail, detailed: true });
+        return res.render('data', { title: 'Applicant List', data: unsorted, detail: detail, detailed: true });
     }
 
     let sorted = sort(unsorted, req.params.params);
-    return res.render('data', { title: 'Data', data: sorted });
+    return res.render('data', { title: 'Applicant List', data: sorted });
 });
-app.get('/detail/:id_surname', async (req, res) => {
+app.get('/applicants/details/:id_surname', async (req, res) => {
     console.log('blarg!');
     let params = req.params.id_surname.split('-');
     let applicant = await getFromDynamoDB(parseInt(params[0]), params[1]);
