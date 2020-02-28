@@ -10,7 +10,7 @@
         <button type="button" class="close" data-dismiss="alert" id="hide">&times;</button>
         <h4 class="alert-heading">File uploaded to S3 successfully!</h4>
         <p class="mb-0">
-            You can view it <a href={{data.Location}}>here</a>!
+            The file's data should be parsed shortly! You'll be able to view it <a href="/applicants">here</a> once it's done!
         </p>
     </div>
 {{/if}}
@@ -22,18 +22,18 @@
         <div display="inline" class="form-group">
             <input type='file'
             accept=
-            'text/plain,
+            "text/plain,
             application/msword,
             application/vnd.openxmlformats-officedocument.wordprocessingml.document,
             application/pdf,
-            application/vnd.oasis.opendocument.text'
+            application/vnd.oasis.opendocument.text"
             class="form-control-file" name="resume" id="resume">
         </div>
         <button type="submit" class="btn btn-primary">Upload</button>
     </form>
 </div>
 <script>
-    $("#hide").click(function() {
-        $("#alert").hide();
+    $('#hide').click(function() {
+        $('#alert').hide();
     });
 </script>
